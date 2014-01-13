@@ -1,0 +1,44 @@
+<style>
+.ccm-ui .collection-group {
+  position: relative;
+  background-color: #F4F4F4;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+
+.ccm-ui .collection-group .handle {
+  cursor: pointer;
+  width: 85%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ccm-ui .collection-group .handle:hover {
+  background-color: #fff;
+}
+
+.ccm-ui .collection-group .panel {
+  display: none;
+}
+
+.ccm-ui .editactions{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 20px;
+}
+
+.ccm-ui button.addrow {
+  display: block;
+  padding: 10px 15px;
+  float: right;
+  margin-bottom: 25px;
+  background-color: #75B94D;
+}
+
+.ccm-ui .addicon {
+  margin-left: 5px;
+}
+</style>

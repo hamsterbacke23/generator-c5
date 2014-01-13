@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<schema version="0.3">
+
+  <table name="bt<%=blockcchandle%>">
+    <field name="bID" type="I">
+      <key />
+      <unsigned />
+    </field>
+    <% _.each(fields, function(field) { %>
+    <field name="<%=field.key%>" type="<%=field.dbtype%>" <% if(field.dbtype == 'C'){ %>size="255"<% } %>></field>
+    <% }); %>
+  </table>
+
+  <% if(om == true){ %>
+  <table name="bt<%=blockcchandle%>Content">
+    <field name="id" type="I">
+      <key />
+      <unsigned />
+      <autoincrement />
+    </field>
+    <field name="bID" type="I">
+      <unsigned />
+    </field>
+     <% _.each(omfields, function(field) { %>
+     <field name="<%=field.key%>" type="<%=field.dbtype%>" <% if(field.dbtype == 'C'){ %>size="255"<% } %>></field>
+     <% }); %>
+  </table>
+  <% } %>
+</schema>

@@ -1,0 +1,57 @@
+<?php defined('C5_EXECUTE') or die("Access Denied.");
+
+<% if (fileselector == true) { %>
+$al = Loader::helper('concrete/asset_library');
+<% } %>
+
+<% if (pageselector == true) { %>
+$pageSelector = Loader::helper('form/page_selector');
+<% } %>
+
+$this->inc('formstyles.inc.css');
+?>
+
+<template class="rowtpl"><?=$rowtpl?></template>
+
+<section class="omcontents sortable-links">
+  <?php
+  $i = 0;
+  if(!empty($omcontents)) {
+    foreach ($omcontents as $row) {
+      $row['index']        = $i;
+
+      <% if (fileselector == true) { %>
+      <% _.each(files, function(field) { %>
+      $fileobject          = $row['<%=field.key%>'] > 0 ? File::getByID($row['<%=field.key%>']) : 0;
+      $row['fileselector<%=field.key%>'] = $al-><%=field.type%>('ccm-b-<%=field.type%>'.$i, 'omcontents['.$i.'][<%=field.key%>]', t('choose.<%=field.type%>'), $fileobject);
+      <% }); %>
+      <% } %>
+
+      <% if (pageselector == true) { %>
+      <% _.each(inlinks, function(field) { %>
+      $row['pageselector<%=field.key%>'] = $pageSelector->selectPage('omcontents['.$i.'][<%=field.key%>]', $row['<%=field.key%>'],'ccm_selectSitemapNode');
+      <% }); %>
+      <% } %>
+
+      echo $this->controller->renderMustacheTemplate($rowtpl,$row);
+      $i++;
+    }//endforeach
+  } else {
+    $row['index']   = $i;
+    $row['heading'] = 'Neue Slide';
+    echo $this->controller->renderMustacheTemplate($rowtpl,$row);
+  }//endif ?>
+</section>
+
+<button class="addrow"><?=t('<%=blockhandle%>.button.addrow')?><img src="<?= ASSETS_URL_IMAGES ?>/icons/add.png" class="addicon" height="14" width="14"></button>
+
+<div class="clearBoth"></div>
+
+<% _.each(fields, function(field) { %>
+<div class="control-group">
+  <?= $form->label('<%=field.key%>', t('<%=blockhandle%>.label.<%=field.key%>'))?>
+  <div class="controls">
+    <?= $form-><%=field.type%>('<%=field.key%>', $<%=field.key%>);?>
+  </div>
+</div>
+<% }); %>
