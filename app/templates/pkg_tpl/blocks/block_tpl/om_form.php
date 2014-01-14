@@ -1,10 +1,10 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 
-<% if (fileselector == true) { %>
+<% if (download == true || image == true) { %>
 $al = Loader::helper('concrete/asset_library');
 <% } %>
 
-<% if (pageselector == true) { %>
+<% if (linkintern == true) { %>
 $pageSelector = Loader::helper('form/page_selector');
 <% } %>
 
@@ -20,18 +20,23 @@ $this->inc('formstyles.inc.css');
     foreach ($omcontents as $row) {
       $row['index']        = $i;
 
-      <% if (fileselector == true) { %>
-      <% _.each(files, function(field) { %>
+    <% _.each(omfields, function(field) { %>
+
+      <% if (field.type == 'image') { %>
       $fileobject          = $row['<%=field.key%>'] > 0 ? File::getByID($row['<%=field.key%>']) : 0;
-      $row['fileselector<%=field.key%>'] = $al-><%=field.type%>('ccm-b-<%=field.type%>'.$i, 'omcontents['.$i.'][<%=field.key%>]', t('choose.<%=field.type%>'), $fileobject);
-      <% }); %>
+      $row['fileselector<%=field.key%>'] = $al->image('ccm-b-<%=field.type%>'.$i, 'omcontents['.$i.'][<%=field.key%>]', t('choose.<%=field.type%>'), $fileobject);
       <% } %>
 
-      <% if (pageselector == true) { %>
-      <% _.each(inlinks, function(field) { %>
-      $row['pageselector<%=field.key%>'] = $pageSelector->selectPage('omcontents['.$i.'][<%=field.key%>]', $row['<%=field.key%>'],'ccm_selectSitemapNode');
-      <% }); %>
+      <% if (field.type == 'download') { %>
+      $fileobject          = $row['<%=field.key%>'] > 0 ? File::getByID($row['<%=field.key%>']) : 0;
+      $row['fileselector<%=field.key%>'] = $al->file('ccm-b-<%=field.type%>'.$i, 'omcontents['.$i.'][<%=field.key%>]', t('choose.<%=field.type%>'), $fileobject);
       <% } %>
+
+      <% if (field.type == 'linkintern') { %>
+      $row['pageselector<%=field.key%>'] = $pageSelector->selectPage('omcontents['.$i.'][<%=field.key%>]', $row['<%=field.key%>'],'ccm_selectSitemapNode');
+      <% } %>
+
+    <% }); %>
 
       echo $this->controller->renderMustacheTemplate($rowtpl,$row);
       $i++;
@@ -47,11 +52,4 @@ $this->inc('formstyles.inc.css');
 
 <div class="clearBoth"></div>
 
-<% _.each(fields, function(field) { %>
-<div class="control-group">
-  <?= $form->label('<%=field.key%>', t('<%=blockhandle%>.label.<%=field.key%>'))?>
-  <div class="controls">
-    <?= $form-><%=field.type%>('<%=field.key%>', $<%=field.key%>);?>
-  </div>
-</div>
-<% }); %>
+

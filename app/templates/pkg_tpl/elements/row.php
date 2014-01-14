@@ -8,7 +8,7 @@ $form = Loader::helper('form');
 ?>
 
 <div class="collection-group">
-  <h3 class="handle"></h3>
+  <h3 class="handle">row</h3>
   <div class="form-row panel">
 
   <% _.each(omfields, function(field) { %><%=field.omformhtml %><% }); %>

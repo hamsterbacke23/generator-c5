@@ -1,4 +1,5 @@
 <?php
+if($<%=field.key%>) {
 $fileData = $this->controller->getFileData($<%=field.key%>);
 extract($fileData);
 
@@ -6,6 +7,7 @@ extract($fileData);
 $fp = new Permissions($fileObject);
 
 if ($fp->canViewFile()) {
+
   $c = Page::getCurrentPage();
   if($c instanceof Page) {
     $cID = $c->getCollectionID();
@@ -49,4 +51,5 @@ if(!($fileObject->error > 0)) { ?>
       }
     } //endif error
   } //endif canView
+} //endif file
 ?>

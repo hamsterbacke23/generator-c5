@@ -2,6 +2,7 @@
 var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
+var avFields = require('./fields.js');
 
 
 var C5blockGenerator = module.exports = function C5blockGenerator(args, options, config) {
@@ -27,17 +28,7 @@ C5blockGenerator.prototype.askFor = function askFor() {
   '--------------------------------'
   );
 
-  this.availFieldTypes = {};
-
-  this.availFieldTypes['input']      = 'C';
-  this.availFieldTypes['tiny']       = 'X2';
-  this.availFieldTypes['checkbox']   = 'I1';
-  this.availFieldTypes['select']     = 'C';
-  this.availFieldTypes['image']      = 'I';
-  this.availFieldTypes['download']   = 'I';
-  this.availFieldTypes['linkintern'] = 'I';
-
-  this.omKey = 'omcontents';
+  this.availFieldTypes = avFields.getFields();
 
   var fieldInputMsg = 'Please enter the fields you want in "type:name[__r]" format comma-separated \r\n '
     + '(Fieldtypes: ' + Object.keys(this.availFieldTypes).join(', ') + '\r\n'
@@ -139,7 +130,7 @@ C5blockGenerator.prototype.askFor = function askFor() {
   }.bind(this));
 
   this.pkgtplpath   = 'pkg_tpl/';
-  this.fieldtplpath = 'formfields_tpl/';
+  this.formtplpath = 'formfields_tpl/';
   this.viewtplpath  = 'viewfields_tpl/';
   this.blocktplpath = 'pkg_tpl/blocks/block_tpl/';
 };
@@ -233,36 +224,34 @@ C5blockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) 
     return;
   }
 
-  switch(sfResult.type)
-  {
-  default:
-    fileName = sfResult.type;
-  }
-
   sfResult.formhtml   = '';
   sfResult.omformhtml = '';
   sfResult.viewhtml   = '';
 
-  try {
-    fileName = fileName + '.tpl.php';
-    tplform = this.read(this.fieldtplpath + fileName);
-    tplview = this.read(this.viewtplpath + fileName);
+  fileName = sfResult.type + '.tpl.php';
 
+  try {
+    tplform = this.read(this.formtplpath + fileName);
   } catch(e) {
-    console.log('Template-file does not seem to exist: ' + fileName + ', using fallbacks if available.');
+    console.log('No form template-file: ' + this.formtplpath + fileName + ', using fallbacks if available.');
+  }
+
+  try {
+    tplview = this.read(this.viewtplpath + fileName);
+  } catch(e) {
+    console.log('No view template-file: ' + this.viewtplpath + fileName + ', using fallbacks if available.');
   }
 
   if(this.om == true) {
     try {
-      fileNameOm = 'om/' + fileName + '.tpl.php';
-      tplformOm = this.read(this.fieldtplpath + fileNameOm);
+      fileNameOm = 'om/' + fileName;
+      tplformOm = this.read(this.formtplpath + fileNameOm);
     } catch(e) {
       tplformOm = tplform;
-      // console.log('No om-template file for ' + fileName);
+      console.log('No one-to-many template file for ' + this.formtplpath + fileName);
     }
 
     omField = this._.clone(sfResult);
-    omField.key = this.omKey + '[{{index}}]["' + sfResult.key + '"]';
     sfResult.omformhtml = this._.template(tplformOm, {
       field: omField,
       blockhandle : this.blockhandle

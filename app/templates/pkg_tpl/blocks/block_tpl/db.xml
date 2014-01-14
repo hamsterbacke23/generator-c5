@@ -21,6 +21,7 @@
     <field name="bID" type="I">
       <unsigned />
     </field>
+    <field name="sort" type="I" size="10"></field>
      <% _.each(omfields, function(field) { %>
      <field name="<%=field.key%>" type="<%=field.dbtype%>" <% if(field.dbtype == 'C'){ %>size="255"<% } %>></field>
      <% }); %>

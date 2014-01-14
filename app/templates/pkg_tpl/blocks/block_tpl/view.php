@@ -18,6 +18,19 @@
 <% } //fieldtype endif%>
 <%});%>
 
+<?php if(isset($omcontents) && !empty($omcontents)) { ?>
+<ul>
+    <?php foreach ($omcontents as $row) { ?>
+    <li>
+      <?php
+      echo '<pre>';
+      var_dump($row);
+      echo '</pre>';
+       ?>
+    </li>
+    <?php }//endforeach ?>
+</ul>
+<?php }//endif ?>
 
 <% if(image == true) { %>
 <?php
