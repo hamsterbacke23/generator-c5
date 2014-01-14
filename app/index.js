@@ -159,10 +159,10 @@ C5blockGenerator.prototype.buildTpl = function buildTpl(fields) {
 
   formtpl = this.read(this.blocktplpath + 'form.php');
   for (var i = 0; i < fields.length; i++) {
-    if(typeof fields[i].formhtml != 'undefined') {
+    if(typeof fields[i] != 'undefined' && typeof fields[i].formhtml != 'undefined') {
       formtpl += fields[i].formhtml;
     } else {
-      console.log('Error: HTML not found: ' + fields[i].key);
+      console.log('Error: HTML not found...');
     }
   };
   return formtpl;
