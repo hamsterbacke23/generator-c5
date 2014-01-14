@@ -1,9 +1,10 @@
 {
   "name": "generator-c5block",
   "version": "0.0.2",
-  "description": "A generator for Yeoman",
+  "description": "A generator for Yeoman, generates concrete5 blocks in packages",
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "concrete5"
   ],
   "homepage": "https://github.com/hamsterbacke23/generator-c5block",
   "bugs": "https://github.com/hamsterbacke23/generator-c5block/issues",
