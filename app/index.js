@@ -41,7 +41,8 @@ C5blockGenerator.prototype.askFor = function askFor() {
   var prompts = [{
       type: 'message',
       name: 'ptitles',
-      message: 'Please enter block title and description with format "title:description":',
+      message: 'Please enter block title and description with format "title:description": \r\n'
+              + 'Block: ',
       validate: function(input){
         return input.length > 0 && input.indexOf(':') != -1;
       }
@@ -84,7 +85,7 @@ C5blockGenerator.prototype.askFor = function askFor() {
     this.ptabfields = props.ptabfields;
     this.pkgversion = props.pversion;
 
-    this.tabs = props.pfields.split('|').length > 0;
+    this.tabs = props.pfields.split('|').length > 1;
 
     this.images     = [];
     this.downloads  = [];
@@ -365,7 +366,7 @@ C5blockGenerator.prototype.app = function app() {
     this.template(this.blocktplpath + 'om_controller.php', this.blockpath + 'om_controller.php');
     this.template(this.blocktplpath + 'om_form.php', this.blockpath + 'om_form.php');
   }
-  // this.copy('_package.json', 'package.json'); //for dependencies like grunt etc
+  this.copy('_package.json', 'package.json'); //for dependencies like grunt etc
 };
 
 

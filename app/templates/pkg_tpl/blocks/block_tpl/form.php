@@ -9,12 +9,12 @@
 <% }); %>
 <%}%>
 
-<% if(om == true ) {%>
+<% if(om == true) {%>
 <?php $this->inc('om_form.php', array('controller'=>$controller)); ?>
 <%}%>
 
 <% // TABS %>
-<% if(tabs == true ) {%>
+<% if(tabs == true) {%>
 <h4 class="kacheltitel"><?php echo t('tile.entertitle')?></h4>
 <?php
   $tabs = array(
@@ -34,7 +34,7 @@
 
 <div class="tab-content">
 <% _.each(tabfields, function(tab, index) { %>
-<section id="ccm-tab-content-<%='tab'+index%>">
+<section id="ccm-tab-content-<%='tab'+index%>" style="display:none">
 <% _.each(tab, function(field) { %>
 <%=field.formhtml %>
 <% }); %>

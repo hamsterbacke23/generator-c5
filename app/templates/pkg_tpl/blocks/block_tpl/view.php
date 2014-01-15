@@ -18,6 +18,7 @@
 <% } //fieldtype endif%>
 <%});%>
 
+<% if(om == true) { %>
 <?php if(isset($omcontents) && !empty($omcontents)) { ?>
 <ul>
     <?php foreach ($omcontents as $row) { ?>
@@ -31,6 +32,7 @@
     <?php }//endforeach ?>
 </ul>
 <?php }//endif ?>
+<% } // endif%>
 
 <% if(image == true) { %>
 <?php

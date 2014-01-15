@@ -2,8 +2,7 @@
   "name": "package",
   "version": "0.0.0",
   "dependencies": {
-    // "grunt": "~0.4.1",
-    // "grunt-line-remover" : "0.0.2",
-    // "grunt-http" : "~1.0.1"
+    "grunt": "~0.4.1",
+    "grunt-line-remover" : "0.0.2"
   }
 }
