@@ -22,7 +22,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
   protected $pkgHandle    = '<%=pkghandle%>';
   protected $omTable      = 'bt<%=blockcchandle%>Content';
   protected $omKey        = 'omcontents';
-  // protected $omCheckboxes = array('displayIcon','displayCaption');
+  // protected $omCheckboxes = array('displayIcon','displayCaption'); // edit and uncomment me if you use checkboxes!
   <% } %>
 
   public function getBlockTypeName() {

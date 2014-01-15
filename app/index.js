@@ -30,8 +30,11 @@ C5blockGenerator.prototype.askFor = function askFor() {
 
   this.availFieldTypes = avFields.getFields();
 
-  var fieldInputMsg = 'Please enter the fields you want in "type:name[__r]" format comma-separated \r\n '
+  var fieldInputMsg =
+      '--------------------------------------------------------------------------- \r\n'
+    + 'Please enter the fields you want in "type:name[__r]" format comma-separated \r\n '
     + '(Fieldtypes: ' + Object.keys(this.availFieldTypes).join(', ') + '\r\n'
+    + '--------------------------------------------------------------------------- \r\n'
     + 'EXAMPLE: input:heading__r,tiny:text,checkbox:displayicon,linkintern:bcID' + '\r\n'
     + 'Fields: ';
 
@@ -58,14 +61,17 @@ C5blockGenerator.prototype.askFor = function askFor() {
     },
     type: 'input',
     name: 'pomfields',
-    message: 'Fields for one row: \r\n' + fieldInputMsg,
+    message: '--------------------------\r\n' + '>> Fields for one row << \r\n' + fieldInputMsg,
     validate: function(input){
-      return input.length > 0;
+      return input.length > 0 && input.indexOf('|') < 0;
     }
   },{
     type: 'input',
     name: 'pfields',
-    message: 'General block fields: \r\n' + fieldInputMsg,
+    message: '--------------------------\r\n' +
+             '>> General block fields << \r\n' +
+             'Use "|" to separate Tabs \r\n' +
+             fieldInputMsg,
     validate: function(input){
       return input.length > 0;
   }
@@ -317,12 +323,13 @@ C5blockGenerator.prototype.processFields = function processFields() {
     };
     if(resultTabs.length > 0 ){
       result.tabfields = resultTabs;
+      result.fields = this._.flatten(resultTabs);
     }
   }
   if(this.pom) {
     result.omfields = this.processSingleFields(this.pomfields);
   }
-  if(this.pfields.length > 0) {
+  if(this.pfields.length > 0 && !this.tabs) {
     result.fields = this.processSingleFields(this.pfields);
   }
   // console.log(result);
