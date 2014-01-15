@@ -106,14 +106,15 @@ class <%=blockcchandle%>BlockController extends BlockController {
 
     <% if(om == true){ %>
     foreach ($args[$this->omKey] as $item) {
-      <% _.each(omfields, function(omfield) { %>
-        <% if(omfield.required) { %>
-        if (trim($item['<%=field.key%>']) == '') {
-          $e->add(t('<%=blockhandle%>.error.<%=field.key%>fehlt'));
+      if($item['delete'] == 'yes') {
+        continue;
+      }
+      <% _.each(omfields, function(omfield) { if(omfield.required) { %>
+        if (trim($item['<%=omfield.key%>']) == '') {
+          $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>fehlt'));
           break;
         }
-        <% } %>
-      <% });%>
+      <% } });%>
     }
     <% } %>
     return $e;

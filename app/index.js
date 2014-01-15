@@ -263,7 +263,6 @@ C5blockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) 
       field: omField,
       blockhandle : this.blockhandle
     });
-
   }
 
   if(typeof tplform != 'undefined') {
@@ -372,6 +371,7 @@ C5blockGenerator.prototype.app = function app() {
 
 C5blockGenerator.prototype.projectfiles = function projectfiles() {
   // var pkgpath = this.pkghandle + '/';
+  this.copy(this.pkgtplpath + 'icon.png', this.pkgpath + 'icon.png');
   this.template('Gruntfile.js', this.pkgpath + 'Gruntfile.js');
   this.template('_package.json', this.pkgpath + 'package.json');
 };

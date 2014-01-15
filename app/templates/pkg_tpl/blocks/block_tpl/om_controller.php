@@ -1,11 +1,18 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
 
-////////////////////////////
-// one to many controller //
-// dont edit, extend me   //
-////////////////////////////
 
+/**
+ * One-to-many controller
+ * Dont edit, extend me
+ *
+ * What does it do?
+ * - Overwrites concrete5 standard block save, duplicate, delete functions
+ * - Handles Mustache Row Templates
+ *
+ * Tobias Schmidt <tobias.schmidt@seitenbau.com>
+ * 15.01.2014
+ */
 abstract class <%=blockcchandle%>OneToManyController extends BlockController{
 
   protected $omTable      = '';

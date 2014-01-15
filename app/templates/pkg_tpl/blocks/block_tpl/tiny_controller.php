@@ -186,87 +186,87 @@ class <%=blockhandle%>Tiny
   }
 
   private function replaceFileID($match) {
-      $fID = $match[1];
-      if ($fID > 0) {
-          $path = File::getRelativePathFromID($fID);
-          return $path;
-      }
+    $fID = $match[1];
+    if ($fID > 0) {
+      $path = File::getRelativePathFromID($fID);
+      return $path;
+    }
   }
 
   private function replaceImageID($match) {
-      $fID = $match[1];
-      if ($fID > 0) {
-          preg_match('/width\s*="([0-9]+)"/',$match[0],$matchWidth);
-          preg_match('/height\s*="([0-9]+)"/',$match[0],$matchHeight);
-          $file = File::getByID($fID);
-          if (is_object($file) && (!$file->isError())) {
-              $imgHelper = Loader::helper('image');
-              $maxWidth = ($matchWidth[1]) ? $matchWidth[1] : $file->getAttribute('width');
-              $maxHeight = ($matchHeight[1]) ? $matchHeight[1] : $file->getAttribute('height');
-              if ($file->getAttribute('width') > $maxWidth || $file->getAttribute('height') > $maxHeight) {
-                  $thumb = $imgHelper->getThumbnail($file, $maxWidth, $maxHeight);
-                  return preg_replace('/{CCM:FID_([0-9]+)}/i', $thumb->src, $match[0]);
-              }
-          }
-          return $match[0];
+    $fID = $match[1];
+    if ($fID > 0) {
+      preg_match('/width\s*="([0-9]+)"/',$match[0],$matchWidth);
+      preg_match('/height\s*="([0-9]+)"/',$match[0],$matchHeight);
+      $file = File::getByID($fID);
+      if (is_object($file) && (!$file->isError())) {
+        $imgHelper = Loader::helper('image');
+        $maxWidth = ($matchWidth[1]) ? $matchWidth[1] : $file->getAttribute('width');
+        $maxHeight = ($matchHeight[1]) ? $matchHeight[1] : $file->getAttribute('height');
+        if ($file->getAttribute('width') > $maxWidth || $file->getAttribute('height') > $maxHeight) {
+          $thumb = $imgHelper->getThumbnail($file, $maxWidth, $maxHeight);
+          return preg_replace('/{CCM:FID_([0-9]+)}/i', $thumb->src, $match[0]);
+        }
       }
+      return $match[0];
+    }
   }
 
   private function replaceDownloadFileID($match) {
-      $fID = $match[1];
-      if ($fID > 0) {
-          $c = Page::getCurrentPage();
-          if (is_object($c)) {
-              return View::url('/download_file', 'view', $fID, $c->getCollectionID());
-          } else {
-              return View::url('/download_file', 'view', $fID);
-          }
+    $fID = $match[1];
+    if ($fID > 0) {
+      $c = Page::getCurrentPage();
+      if (is_object($c)) {
+        return View::url('/download_file', 'view', $fID, $c->getCollectionID());
+      } else {
+        return View::url('/download_file', 'view', $fID);
       }
+    }
   }
 
   private function replaceDownloadFileIDInEditMode($match) {
-      $fID = $match[1];
-      if ($fID > 0) {
-          return View::url('/download_file', 'view', $fID);
-      }
+    $fID = $match[1];
+    if ($fID > 0) {
+      return View::url('/download_file', 'view', $fID);
+    }
   }
 
   private function replaceFileIDInEditMode($match) {
-      $fID = $match[1];
-      return View::url('/download_file', 'view_inline', $fID);
+    $fID = $match[1];
+    return View::url('/download_file', 'view_inline', $fID);
   }
 
   private function replaceCollectionID($match) {
-      $cID = $match[1];
-      if ($cID > 0) {
-          $c = Page::getByID($cID, 'ACTIVE');
-          return Loader::helper("navigation")->getLinkToCollection($c);
-      }
+    $cID = $match[1];
+    if ($cID > 0) {
+      $c = Page::getByID($cID, 'ACTIVE');
+      return Loader::helper("navigation")->getLinkToCollection($c);
+    }
   }
 
   function translateTo($text) {
-      // keep links valid
-      $url1 = str_replace('/', '\/', BASE_URL . DIR_REL . '/' . DISPATCHER_FILENAME);
-      $url2 = str_replace('/', '\/', BASE_URL . DIR_REL);
-      $url3 = View::url('/download_file', 'view_inline');
-      $url3 = str_replace('/', '\/', $url3);
-      $url3 = str_replace('-', '\-', $url3);
-      $url4 = View::url('/download_file', 'view');
-      $url4 = str_replace('/', '\/', $url4);
-      $url4 = str_replace('-', '\-', $url4);
-      $text = preg_replace(
-          array(
-              '/' . $url1 . '\?cID=([0-9]+)/i',
-              '/' . $url3 . '([0-9]+)\//i',
-              '/' . $url4 . '([0-9]+)\//i',
-              '/' . $url2 . '/i'),
-          array(
-              '{CCM:CID_\\1}',
-              '{CCM:FID_\\1}',
-              '{CCM:FID_DL_\\1}',
-              '{CCM:BASE_URL}')
-          , $text);
-      return $text;
+    // keep links valid
+    $url1 = str_replace('/', '\/', BASE_URL . DIR_REL . '/' . DISPATCHER_FILENAME);
+    $url2 = str_replace('/', '\/', BASE_URL . DIR_REL);
+    $url3 = View::url('/download_file', 'view_inline');
+    $url3 = str_replace('/', '\/', $url3);
+    $url3 = str_replace('-', '\-', $url3);
+    $url4 = View::url('/download_file', 'view');
+    $url4 = str_replace('/', '\/', $url4);
+    $url4 = str_replace('-', '\-', $url4);
+    $text = preg_replace(
+      array(
+        '/' . $url1 . '\?cID=([0-9]+)/i',
+        '/' . $url3 . '([0-9]+)\//i',
+        '/' . $url4 . '([0-9]+)\//i',
+        '/' . $url2 . '/i'),
+      array(
+        '{CCM:CID_\\1}',
+        '{CCM:FID_\\1}',
+        '{CCM:FID_DL_\\1}',
+        '{CCM:BASE_URL}')
+      , $text);
+    return $text;
   }
 
 }
