@@ -1,7 +1,13 @@
-# generator-c5block [![Build Status](https://secure.travis-ci.org/hamsterbacke23/generator-c5block.png?branch=master)](https://travis-ci.org/hamsterbacke23/generator-c5block)
+# generator-c5block
 
-A generator for [Yeoman](http://yeoman.io).
+A generator for [Yeoman](http://yeoman.io) which creates CMS Blocks for [concrete5](http://www.concrete5.org/).
 
+Three block form layouts are supported
+- Normal
+- Tabs
+- Sortable Lists (e.g. for link lists, content sliders etc.)
+
+It depends on external modules for images, texteditor and link checking, which have to be provided.
 
 ## Getting Started
 
