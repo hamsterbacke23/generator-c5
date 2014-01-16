@@ -4,20 +4,16 @@ var path = require('path');
 var yeoman = require('yeoman-generator');
 var avFields = require('./fields.js');
 
-
-var C5blockGenerator = module.exports = function C5blockGenerator(args, options, config) {
-  yeoman.generators.Base.apply(this, arguments);
-
-  this.on('end', function () {
-    this.installDependencies({ skipInstall: options['skip-install'] });
-  });
-
-  this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
+var BlockGenerator = module.exports = function BlockGenerator(args, options, config) {
+  var self = this;
+  yeoman.generators.NamedBase.apply(this, arguments);
+  this.argument('blockhandle', { type: String, required: true });
 };
 
-util.inherits(C5blockGenerator, yeoman.generators.Base);
 
-C5blockGenerator.prototype.askFor = function askFor() {
+util.inherits(BlockGenerator, yeoman.generators.NamedBase);
+
+BlockGenerator.prototype.askFor = function askFor() {
   var cb = this.async();
 
   // have Yeoman greet the user.
@@ -39,11 +35,12 @@ C5blockGenerator.prototype.askFor = function askFor() {
 
   var prompts = [{
       type: 'message',
-      name: 'ptitles',
-      message: 'Please enter block title and description with format "title:description": \r\n'
+      name: 'pblockdesc',
+      default: this.pkghandle + 'Package ' + this.blockhandle + ' Block',
+      message: 'Please enter block description with format "title:description": \r\n'
               + 'Block: ',
       validate: function(input){
-        return input.length > 0 && input.indexOf(':') != -1;
+        return input.length > 0;
       }
   },{
     type: 'confirm',
@@ -82,6 +79,7 @@ C5blockGenerator.prototype.askFor = function askFor() {
     this.pomfields  = props.pomfields;
     this.pom        = props.pom;
     this.ptabfields = props.ptabfields;
+    this.blockdesc  = props.pblockdesc;
 
     this.tabs = props.pfields.split('|').length > 1;
 
@@ -97,17 +95,10 @@ C5blockGenerator.prototype.askFor = function askFor() {
     this.namespace  = 'sb';
 
     //define handles and titles
-    var titles = props.ptitles.split(':');
-
-    this.pkghandle     = this._.underscored(
-      this.namespace + '_' + this._.slugify(titles[0].toLowerCase()).trim()
-    );
     this.pkgpath       = this.pkghandle + '/';
-    this.pkgcchandle   = this._.classify(this.namespace + '_' + titles[0]).trim();
-    this.pkgdesc       = titles[1] + ' Package';
-    this.blockdesc     = titles[1];
+
     this.blockhandle   = this._.underscored(
-      this._.slugify(titles[0]).trim()
+      this._.slugify(this.blockhandle).trim()
     );
     this.blockcchandle = this._.classify(this.blockhandle).trim();
 
@@ -137,14 +128,14 @@ C5blockGenerator.prototype.askFor = function askFor() {
     cb();
   }.bind(this));
 
-  this.pkgtplpath   = 'pkg_tpl/';
-  this.formtplpath = 'formfields_tpl/';
-  this.viewtplpath  = 'viewfields_tpl/';
-  this.blocktplpath = 'pkg_tpl/blocks/block_tpl/';
+  this.formtplpath = '_formfields/';
+  this.viewtplpath  = '_viewfields/';
+  this.blocktplpath = 'blocks/_block/';
 };
 
 
-C5blockGenerator.prototype.checkDependencies = function checkDependencies() {
+
+BlockGenerator.prototype.checkDependencies = function checkDependencies() {
     //check dependieces
     this.dependencies = [];
     if(this.linkintern   == true) {
@@ -156,7 +147,7 @@ C5blockGenerator.prototype.checkDependencies = function checkDependencies() {
     this.dependencies = this.dependencies.join(',');
 };
 
-C5blockGenerator.prototype.buildTpl = function buildTpl(fields) {
+BlockGenerator.prototype.buildTpl = function buildTpl(fields) {
   var formtpl;
   if(typeof fields == 'undefined'){
     return;
@@ -174,7 +165,7 @@ C5blockGenerator.prototype.buildTpl = function buildTpl(fields) {
 };
 
 
-C5blockGenerator.prototype.processSingleFields = function processSingleFields(str) {
+BlockGenerator.prototype.processSingleFields = function processSingleFields(str) {
   var result = [];
   if(typeof str == 'undefined'){
     return result;
@@ -184,7 +175,6 @@ C5blockGenerator.prototype.processSingleFields = function processSingleFields(st
   var sfResult;
   var fieldParts;
   var reqParts;
-
 
   if(singleFields.length == 0){
     return result;
@@ -217,7 +207,7 @@ C5blockGenerator.prototype.processSingleFields = function processSingleFields(st
   return result;
 }
 
-C5blockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) {
+BlockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) {
   var tplform;
   var tplview;
   var tplformOm;
@@ -283,7 +273,7 @@ C5blockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) 
   return sfResult;
 }
 
-C5blockGenerator.prototype.checkType = function checkType(sfResult) {
+BlockGenerator.prototype.checkType = function checkType(sfResult) {
   if(typeof sfResult == 'undefined') {
     return;
   }
@@ -310,7 +300,7 @@ C5blockGenerator.prototype.checkType = function checkType(sfResult) {
 }
 
 
-C5blockGenerator.prototype.processFields = function processFields() {
+BlockGenerator.prototype.processFields = function processFields() {
   var singleFields;
   var result = {};
   if(this.tabs) {
@@ -334,13 +324,12 @@ C5blockGenerator.prototype.processFields = function processFields() {
   return result;
 };
 
-C5blockGenerator.prototype.app = function app() {
+BlockGenerator.prototype.files = function files() {
   //define paths
   this.blockpath = this.pkgpath + 'blocks/' + this.blockhandle + '/';
   this.blockrelpath = 'blocks/' + this.blockhandle + '/';
 
   //do basic files
-  this.template(this.pkgtplpath + 'controller.php', this.pkgpath + 'controller.php');
   this.template(this.blocktplpath + 'view.php', this.blockpath + 'view.php');
   this.template(this.blocktplpath + 'controller.php', this.blockpath + 'controller.php');
 
@@ -353,27 +342,24 @@ C5blockGenerator.prototype.app = function app() {
   }
   if(this.tiny) {
     this.template(this.blocktplpath + 'tiny_controller.php', this.blockpath + 'tiny_controller.php');
-    this.template(this.pkgtplpath + 'elements/editor_config.php', this.pkgpath + '/elements/editor_config.php');
+    this.template( 'elements/editor_config.php', this.pkgpath + '/elements/editor_config.php');
   }
   if(this.om) {
-    this.copy(this.pkgtplpath + 'libraries/Mustache.php', this.pkgpath + '/libraries/Mustache.php');
-    this.copy(this.pkgtplpath + 'models/om_record.php', this.pkgpath + '/models/om_record.php');
+    this.copy('libraries/Mustache.php', this.pkgpath + '/libraries/Mustache.php');
+    this.copy('models/om_record.php', this.pkgpath + '/models/om_record.php');
     this.copy(this.blocktplpath + 'formstyles.inc.css', this.blockpath + 'formstyles.inc.css');
     this.template(this.blocktplpath + 'auto.js', this.blockpath + 'auto.js');
-    this.template(this.pkgtplpath + 'elements/row.php', this.pkgpath + '/elements/row.php');
+    this.template( 'elements/row.php', this.pkgpath + '/elements/row.php');
     this.template(this.blocktplpath + 'om_controller.php', this.blockpath + 'om_controller.php');
     this.template(this.blocktplpath + 'om_form.php', this.blockpath + 'om_form.php');
   }
-  // this.copy('_package.json', 'package.json'); //for dependencies like grunt etc
-};
 
-
-C5blockGenerator.prototype.projectfiles = function projectfiles() {
   this.copy('_index_cli.php', 'index_cli.php');
-  this.copy(this.pkgtplpath + 'icon.png', this.pkgpath + 'icon.png');
-  this.template(this.pkgtplpath +'cli_tpl/_upgrade_cli.php', this.pkgpath + 'cli/upgrade_cli.php');
-  this.template(this.pkgtplpath +'cli_tpl/_install_cli.php', this.pkgpath + 'cli/install_cli.php');
-  this.template(this.pkgtplpath +'_Gruntfile.js', this.pkgpath + 'Gruntfile.js');
-  this.template(this.pkgtplpath + '_package.json', this.pkgpath + 'package.json');
+  this.copy('icon.png', this.pkgpath + 'icon.png');
+  this.template('_cli/_upgrade_cli.php', this.pkgpath + 'cli/upgrade_cli.php');
+  this.template('_cli/_install_cli.php', this.pkgpath + 'cli/install_cli.php');
+  this.template('_Gruntfile.js', this.pkgpath + 'Gruntfile.js');
+  this.template( '_package.json', this.pkgpath + 'package.json');
 };
+
 

@@ -13,7 +13,7 @@
     "email": "",
     "url": "https://github.com/hamsterbacke23"
   },
-  "main": "app/index.js",
+  "main": "package/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/hamsterbacke23/generator-c5block.git"
