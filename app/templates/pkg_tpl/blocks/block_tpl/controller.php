@@ -109,7 +109,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
       if($item['delete'] == 'yes') {
         continue;
       }
-      <% _.each(omfields, function(omfield) { if(omfield.required) { %>
+      <% _.each(omfields, function(omfield) { if(typeof omfield != 'undefined' && omfield.required) { %>
         if (trim($item['<%=omfield.key%>']) == '') {
           $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>fehlt'));
           break;

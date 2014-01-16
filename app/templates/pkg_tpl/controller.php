@@ -5,7 +5,7 @@ class <%=pkgcchandle+'Package'%> extends Package
 {
   protected $pkgHandle = '<%=pkghandle%>';
   protected $dependencies = array(<%=dependencies%>);
-  protected $appVersionRequired = '5.3.2';
+  protected $appVersionRequired = '5.6.1';
   protected $pkgVersion = '<%=pkgversion%>';
   protected $blockHandles = array('<%=blockhandle%>');
 

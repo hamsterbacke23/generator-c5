@@ -35,8 +35,7 @@ C5blockGenerator.prototype.askFor = function askFor() {
     + 'Please enter the fields you want in "type:name[__r]" format comma-separated \r\n '
     + '(Fieldtypes: ' + Object.keys(this.availFieldTypes).join(', ') + '\r\n'
     + '--------------------------------------------------------------------------- \r\n'
-    + 'EXAMPLE: input:heading__r,tiny:text,checkbox:displayicon,linkintern:bcID' + '\r\n'
-    + 'Fields: ';
+    + 'EXAMPLE: input:heading__r,tiny:text,checkbox:displayicon,linkintern:bcID' + '\r\n';
 
   var prompts = [{
       type: 'message',
@@ -46,11 +45,6 @@ C5blockGenerator.prototype.askFor = function askFor() {
       validate: function(input){
         return input.length > 0 && input.indexOf(':') != -1;
       }
-  },{
-    type: 'input',
-    name: 'pversion',
-    default: '0.0.1',
-    message: 'Package Version'
   },{
     type: 'confirm',
     name: 'pom',
@@ -62,7 +56,10 @@ C5blockGenerator.prototype.askFor = function askFor() {
     },
     type: 'input',
     name: 'pomfields',
-    message: '--------------------------\r\n' + '>> Fields for one row << \r\n' + fieldInputMsg,
+    message: '--------------------------\r\n' +
+            '>> Fields for one row << \r\n' +
+            fieldInputMsg + '\r\n' +
+            'Row fields: ',
     validate: function(input){
       return input.length > 0 && input.indexOf('|') < 0;
     }
@@ -72,7 +69,9 @@ C5blockGenerator.prototype.askFor = function askFor() {
     message: '--------------------------\r\n' +
              '>> General block fields << \r\n' +
              'Use "|" to separate Tabs \r\n' +
-             fieldInputMsg,
+             fieldInputMsg  + ' \r\n' +
+             'Fields: ',
+
     validate: function(input){
       return input.length > 0;
   }
@@ -83,7 +82,6 @@ C5blockGenerator.prototype.askFor = function askFor() {
     this.pomfields  = props.pomfields;
     this.pom        = props.pom;
     this.ptabfields = props.ptabfields;
-    this.pkgversion = props.pversion;
 
     this.tabs = props.pfields.split('|').length > 1;
 
@@ -95,14 +93,17 @@ C5blockGenerator.prototype.askFor = function askFor() {
 
     this.om = props.pom;
 
+    this.pkgversion = '0.0.1';
+    this.namespace  = 'sb';
+
     //define handles and titles
     var titles = props.ptitles.split(':');
 
     this.pkghandle     = this._.underscored(
-      'sb_' + this._.slugify(titles[0].toLowerCase()).trim()
+      this.namespace + '_' + this._.slugify(titles[0].toLowerCase()).trim()
     );
     this.pkgpath       = this.pkghandle + '/';
-    this.pkgcchandle   = this._.classify('Sb_' + titles[0]).trim();
+    this.pkgcchandle   = this._.classify(this.namespace + '_' + titles[0]).trim();
     this.pkgdesc       = titles[1] + ' Package';
     this.blockdesc     = titles[1];
     this.blockhandle   = this._.underscored(
@@ -151,9 +152,6 @@ C5blockGenerator.prototype.checkDependencies = function checkDependencies() {
     }
     if(this.image == true) {
       this.dependencies.push('"sb_images"');
-    }
-    if(this.tiny == true) {
-      this.dependencies.push('"sb_texteditor"');
     }
     this.dependencies = this.dependencies.join(',');
 };
@@ -355,24 +353,27 @@ C5blockGenerator.prototype.app = function app() {
   }
   if(this.tiny) {
     this.template(this.blocktplpath + 'tiny_controller.php', this.blockpath + 'tiny_controller.php');
+    this.template(this.pkgtplpath + 'elements/editor_config.php', this.pkgpath + '/elements/editor_config.php');
   }
   if(this.om) {
-    this.copy(this.pkgtplpath + '/libraries/Mustache.php', this.pkgpath + '/libraries/Mustache.php');
-    this.copy(this.pkgtplpath + '/models/om_record.php', this.pkgpath + '/models/om_record.php');
+    this.copy(this.pkgtplpath + 'libraries/Mustache.php', this.pkgpath + '/libraries/Mustache.php');
+    this.copy(this.pkgtplpath + 'models/om_record.php', this.pkgpath + '/models/om_record.php');
     this.copy(this.blocktplpath + 'formstyles.inc.css', this.blockpath + 'formstyles.inc.css');
     this.template(this.blocktplpath + 'auto.js', this.blockpath + 'auto.js');
-    this.template(this.pkgtplpath + '/elements/row.php', this.pkgpath + '/elements/row.php');
+    this.template(this.pkgtplpath + 'elements/row.php', this.pkgpath + '/elements/row.php');
     this.template(this.blocktplpath + 'om_controller.php', this.blockpath + 'om_controller.php');
     this.template(this.blocktplpath + 'om_form.php', this.blockpath + 'om_form.php');
   }
-  this.copy('_package.json', 'package.json'); //for dependencies like grunt etc
+  // this.copy('_package.json', 'package.json'); //for dependencies like grunt etc
 };
 
 
 C5blockGenerator.prototype.projectfiles = function projectfiles() {
-  // var pkgpath = this.pkghandle + '/';
+  this.copy('_index_cli.php', 'index_cli.php');
   this.copy(this.pkgtplpath + 'icon.png', this.pkgpath + 'icon.png');
-  this.template('Gruntfile.js', this.pkgpath + 'Gruntfile.js');
-  this.template('_package.json', this.pkgpath + 'package.json');
+  this.template(this.pkgtplpath +'cli_tpl/_upgrade_cli.php', this.pkgpath + 'cli/upgrade_cli.php');
+  this.template(this.pkgtplpath +'cli_tpl/_install_cli.php', this.pkgpath + 'cli/install_cli.php');
+  this.template(this.pkgtplpath +'_Gruntfile.js', this.pkgpath + 'Gruntfile.js');
+  this.template(this.pkgtplpath + '_package.json', this.pkgpath + 'package.json');
 };
 
