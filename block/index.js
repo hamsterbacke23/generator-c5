@@ -6,7 +6,10 @@ var genUtils = require('../utils.js');
 var avFields = require('./fields.js');
 
 var BlockGenerator = module.exports = function BlockGenerator(args, options, config) {
-  yeoman.generators.NamedBase.apply(this, arguments);
+  yeoman.generators.Base.apply(this, arguments);
+
+  this.argument('name', { type: String, required: false });
+
   this.on('end', function () {
     if (this.autopkg) {
       this.invoke('c5:package', {
@@ -23,7 +26,7 @@ var BlockGenerator = module.exports = function BlockGenerator(args, options, con
 };
 
 
-util.inherits(BlockGenerator, yeoman.generators.NamedBase);
+util.inherits(BlockGenerator, yeoman.generators.Base);
 
 BlockGenerator.prototype.askFor = function askFor() {
   var cb = this.async();
@@ -50,8 +53,20 @@ BlockGenerator.prototype.askFor = function askFor() {
     + '--------------------------------------------------------------------------- \r\n'
     + 'EXAMPLE: input:heading__r,tiny:text,checkbox:displayicon,linkintern:bcID' + '\r\n';
 
+  var askTitle = typeof this.name == 'undefined' || !this.name ? true : false;
+
   var prompts = [
   {
+    when: function(response) {
+      return askTitle;
+    },
+    name: 'pblockname',
+    default: 'nur\'n test',
+    message: 'Please enter block title:',
+    validate: function(input){
+      return input.length > 0;
+    }
+  },{
     name: 'pblockdesc',
     default: 'Mein neuer Block',
     message: 'Please enter block description:',
@@ -102,6 +117,7 @@ BlockGenerator.prototype.askFor = function askFor() {
     this.ptabfields = props.ptabfields;
     this.blockdesc  = props.pblockdesc;
     this.autopkg    = props.pautopkg;
+    this.name = askTitle ? props.pblockname : this.name;
 
     this.tabs = props.pfields.split('|').length > 1;
 

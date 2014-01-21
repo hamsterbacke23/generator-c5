@@ -7,7 +7,7 @@ var yeoman = require('yeoman-generator');
 var C5Generator = module.exports = function C5Generator(args, options, config) {
 
   yeoman.generators.Base.apply(this, arguments);
-  this.argument('name', { type: String, required: true });
+  this.argument('name', { type: String, required: false });
 
   this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
 

@@ -6,7 +6,9 @@ var yeoman = require('yeoman-generator');
 
 var PackageGenerator = module.exports = function PackageGenerator(args, options, config) {
 
-  yeoman.generators.NamedBase.apply(this, arguments);
+  yeoman.generators.Base.apply(this, arguments);
+
+  this.argument('name', { type: String, required: false });
 
   this.on('end', function () {
     if(this.installpkg) {
@@ -21,7 +23,7 @@ var PackageGenerator = module.exports = function PackageGenerator(args, options,
   });
 };
 
-util.inherits(PackageGenerator, yeoman.generators.NamedBase);
+util.inherits(PackageGenerator, yeoman.generators.Base);
 
 PackageGenerator.prototype.askFor = function askFor() {
   var cb = this.async();
@@ -39,19 +41,31 @@ PackageGenerator.prototype.askFor = function askFor() {
   console.log('-----------------------------------------------------');
 
   var defaultPkgDesc = typeof this.options.pkgdesc != 'undefined' ? this.options.pkgdesc : 'My Package';
+  var askTitle = typeof this.name == 'undefined' || !this.name ? true : false;
 
-  var prompts = [{
-        name: 'pdesc',
-        message: 'Package description: ',
-        default: defaultPkgDesc,
-        validate: function(input){
-          return input.length > 0;
-        }
-      },{
-        name: 'pkgcli',
-        type: 'confirm',
-        message: 'Include command line interface?',
-        default: true
+  var prompts = [
+    {
+      when: function(response) {
+        return askTitle;
+      },
+      name: 'ppkgname',
+      default: 'pkgtest',
+      message: 'Please enter package title:',
+      validate: function(input){
+        return input.length > 0;
+      }
+    },{
+      name: 'pdesc',
+      message: 'Package description: ',
+      default: defaultPkgDesc,
+      validate: function(input){
+        return input.length > 0;
+      }
+    },{
+      name: 'pkgcli',
+      type: 'confirm',
+      message: 'Include command line interface?',
+      default: true
     },{
         when: function(response) {
           return response.pkgcli == true;
@@ -69,6 +83,7 @@ PackageGenerator.prototype.askFor = function askFor() {
     this.pkgversion   = '0.0.1';
     this.blockhandle  = typeof this.options.blockhandle == 'undefined' ? '' : this.options.blockhandle;
     this.dependencies = typeof this.options.dependencies == 'undefined' ? '' : this.options.dependencies;
+    this.name         = askTitle ? props.ppkgname : this.name;
 
     //define handles and titles
     this.pkghandle   = genUtils.getHandle(this);
