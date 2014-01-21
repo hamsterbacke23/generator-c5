@@ -1,8 +1,0 @@
-language: node_js
-node_js:
-  - '0.8'
-  - '0.10'
-before_install:
-  - currentfolder=${PWD##*/}
-  - if [ "$currentfolder" != 'generator-c5' ]; then cd .. && eval "mv $currentfolder generator-c5" && cd generator-c5; fi
-

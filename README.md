@@ -1,6 +1,6 @@
 # generator-c5
 
-A generator for [Yeoman](http://yeoman.io) which creates CMS Blocks for [concrete5](http://www.concrete5.org/).
+A generator for [Yeoman](http://yeoman.io) which creates CMS Blocks, Packages etc. for [concrete5](http://www.concrete5.org/).
 
 Three block form layouts are supported
 - Normal
