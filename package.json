@@ -1,13 +1,13 @@
 {
-  "name": "generator-c5block",
+  "name": "generator-c5",
   "version": "1.0.0",
   "description": "A generator for Yeoman, generates concrete5 blocks in packages",
   "keywords": [
     "yeoman-generator",
     "concrete5"
   ],
-  "homepage": "https://github.com/hamsterbacke23/generator-c5block",
-  "bugs": "https://github.com/hamsterbacke23/generator-c5block/issues",
+  "homepage": "https://github.com/hamsterbacke23/generator-c5",
+  "bugs": "https://github.com/hamsterbacke23/generator-c5/issues",
   "author": {
     "name": "",
     "email": "",
@@ -16,7 +16,7 @@
   "main": "app/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/hamsterbacke23/generator-c5block.git"
+    "url": "git://github.com/hamsterbacke23/generator-c5.git"
   },
   "scripts": {
     "test": "mocha"

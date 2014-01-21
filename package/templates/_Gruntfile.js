@@ -23,6 +23,9 @@ module.exports = function (grunt) {
       },
       install : {
         command: 'php cli/install_cli.php',
+      },
+      uninstall : {
+        command: 'php cli/uninstall_cli.php',
       }
     }
 
@@ -33,5 +36,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('upgrade', ['version','exec:upgrade']);
   grunt.registerTask('install', ['exec:install']);
+  grunt.registerTask('uninstall', ['exec:uninstall']);
 
 };

@@ -1,7 +1,7 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 <% if(linkintern == true ) { %>$pageSelector = Loader::helper('form/page_selector');<% } %>
 <% if(fileselector == true ) { %>$al = Loader::helper('concrete/asset_library');<% } %>
-<% if(tiny == true ) { %>Loader::packageElement('editor_config', '<%=pkghandle%>', array('textEditorHeight'=>250));<% } %>
+<% if(tiny == true ) { %>Loader::packageElement('editor_config', $this->controller->getPkgHandle(), array('textEditorHeight'=>250));<% } %>
 ?>
 <% if(tabs != true ) {%>
 <% _.each(fields, function(field) { %>
