@@ -16,7 +16,6 @@ defined('C5_EXECUTE') or die("Access Denied.");
 abstract class <%=blockcchandle%>OneToManyController extends BlockController{
 
   protected $omTable      = '';
-  protected $pkgHandle    = '';
   protected $omKey        = '';
   protected $omCheckboxes = array();
 
@@ -48,7 +47,7 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
     ob_start();
     Loader::packageElement(
       $name,
-      $this->pkgHandle
+      $this->getPkgHandle()
     );
     $mustacheTemplate =  ob_get_contents();
     ob_end_clean();
@@ -62,7 +61,7 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
    */
   public function renderMustacheTemplate($template, $data)
   {
-    Loader::library('Mustache', $this->pkgHandle);
+    Loader::library('Mustache', $this->getPkgHandle());
     $m = new Mustache;
     return $m->render($template, $data);
   }
@@ -145,7 +144,7 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
   public function doOmRow($args, $bID = false)
   {
     if ($this->omTable) {
-      Loader::model('om_record', $this->pkgHandle);
+      Loader::model('om_record', $this->getPkgHandle());
 
       $db          = Loader::db();
       $columns     = $db->GetCol('show columns from `' . $this->omTable . '`');

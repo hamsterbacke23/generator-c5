@@ -2,12 +2,24 @@
 var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
+var genUtils = require('../utils.js');
 var avFields = require('./fields.js');
 
 var BlockGenerator = module.exports = function BlockGenerator(args, options, config) {
-  var self = this;
   yeoman.generators.NamedBase.apply(this, arguments);
-  this.argument('blockhandle', { type: String, required: true });
+  this.on('end', function () {
+    if (this.autopkg) {
+      this.invoke('c5:package', {
+        args: this.pkghandle,
+        options: {
+          'pkgdesc' : this.blockdesc + ' Package',
+          'blockhandle' : this.blockhandle,
+          'dependencies' : this.dependencies,
+          'nested' : true
+        }
+      });
+    }
+  });
 };
 
 
@@ -16,15 +28,20 @@ util.inherits(BlockGenerator, yeoman.generators.NamedBase);
 BlockGenerator.prototype.askFor = function askFor() {
   var cb = this.async();
 
-  // have Yeoman greet the user.
-  console.log(this.yeoman);
-  console.log(
-  '--------------------------------\r\n'+
-  '  SB concrete5 block generator\r\n'+
-  '--------------------------------'
-  );
+  if (!this.options.nested) {
+    console.log(this.yeoman);
+    console.log(
+    '--------------------------------\r\n'+
+    '  SB concrete5 package generator\r\n'+
+    '--------------------------------'
+    );
+  }
+  console.log('-----------------------------------------------------');
+  console.log('The block "' + this.name + '" will now  be created');
+  console.log('-----------------------------------------------------');
 
   this.availFieldTypes = avFields.getFields();
+
 
   var fieldInputMsg =
       '--------------------------------------------------------------------------- \r\n'
@@ -33,15 +50,19 @@ BlockGenerator.prototype.askFor = function askFor() {
     + '--------------------------------------------------------------------------- \r\n'
     + 'EXAMPLE: input:heading__r,tiny:text,checkbox:displayicon,linkintern:bcID' + '\r\n';
 
-  var prompts = [{
-      type: 'message',
-      name: 'pblockdesc',
-      default: this.pkghandle + 'Package ' + this.blockhandle + ' Block',
-      message: 'Please enter block description with format "title:description": \r\n'
-              + 'Block: ',
-      validate: function(input){
-        return input.length > 0;
-      }
+  var prompts = [
+  {
+    name: 'pblockdesc',
+    default: 'Mein neuer Block',
+    message: 'Please enter block description:',
+    validate: function(input){
+      return input.length > 0;
+    }
+  },{
+    type: 'confirm',
+    name: 'pautopkg',
+    message: 'Auto-create a package?',
+    default: true
   },{
     type: 'confirm',
     name: 'pom',
@@ -80,6 +101,7 @@ BlockGenerator.prototype.askFor = function askFor() {
     this.pom        = props.pom;
     this.ptabfields = props.ptabfields;
     this.blockdesc  = props.pblockdesc;
+    this.autopkg    = props.pautopkg;
 
     this.tabs = props.pfields.split('|').length > 1;
 
@@ -92,13 +114,9 @@ BlockGenerator.prototype.askFor = function askFor() {
     this.om = props.pom;
 
     this.pkgversion = '0.0.1';
-    this.namespace  = 'sb';
-
-    //define handles and titles
-    this.pkgpath       = this.pkghandle + '/';
 
     this.blockhandle   = this._.underscored(
-      this._.slugify(this.blockhandle).trim()
+      this._.slugify(this.name).trim()
     );
     this.blockcchandle = this._.classify(this.blockhandle).trim();
 
@@ -124,15 +142,22 @@ BlockGenerator.prototype.askFor = function askFor() {
 
     this.checkDependencies();
 
+    //define handles and titles
+    this.pkghandle = '';
+    this.pkgpath = '';
+    if(props.pautopkg) {
+      this.pkghandle = genUtils.getHandle(this, 'sb');
+      this.pkgpath   = this.pkghandle + '/';
+    }
+
     console.log('-----\r\n ... bib bib bibi biiib bib ... \r\n-----');
     cb();
   }.bind(this));
 
-  this.formtplpath = '_formfields/';
+  this.formtplpath  = '_formfields/';
   this.viewtplpath  = '_viewfields/';
   this.blocktplpath = 'blocks/_block/';
 };
-
 
 
 BlockGenerator.prototype.checkDependencies = function checkDependencies() {
@@ -325,6 +350,7 @@ BlockGenerator.prototype.processFields = function processFields() {
 };
 
 BlockGenerator.prototype.files = function files() {
+
   //define paths
   this.blockpath = this.pkgpath + 'blocks/' + this.blockhandle + '/';
   this.blockrelpath = 'blocks/' + this.blockhandle + '/';
@@ -354,12 +380,7 @@ BlockGenerator.prototype.files = function files() {
     this.template(this.blocktplpath + 'om_form.php', this.blockpath + 'om_form.php');
   }
 
-  this.copy('_index_cli.php', 'index_cli.php');
-  this.copy('icon.png', this.pkgpath + 'icon.png');
-  this.template('_cli/_upgrade_cli.php', this.pkgpath + 'cli/upgrade_cli.php');
-  this.template('_cli/_install_cli.php', this.pkgpath + 'cli/install_cli.php');
-  this.template('_Gruntfile.js', this.pkgpath + 'Gruntfile.js');
-  this.template( '_package.json', this.pkgpath + 'package.json');
+
 };
 
 

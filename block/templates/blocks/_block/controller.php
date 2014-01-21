@@ -19,7 +19,6 @@ class <%=blockcchandle%>BlockController extends BlockController {
   protected $btCacheBlockOutputForRegisteredUsers = true;
   <% if(om == true){ %>
   //one to many stuff
-  protected $pkgHandle    = '<%=pkghandle%>';
   protected $omTable      = 'bt<%=blockcchandle%>Content';
   protected $omKey        = 'omcontents';
   // protected $omCheckboxes = array('displayIcon','displayCaption'); // edit and uncomment me if you use checkboxes!
@@ -31,6 +30,15 @@ class <%=blockcchandle%>BlockController extends BlockController {
 
   public function getBlockTypeDescription() {
     return t('<%=blockdesc.trim()%>');
+  }
+
+  public function getPkgHandle()
+  {
+    if(!isset($this->pkgHandle) || !$this->pkgHandle){
+      $blockType = BlockType::getByHandle($this->btHandle);
+      $this->pkgHandle = $blockType->getPackageHandle();
+    }
+    return $this->pkgHandle;
   }
 
   <% if(om == true || tiny == true){ %>

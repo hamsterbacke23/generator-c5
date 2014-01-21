@@ -1,4 +1,4 @@
-# generator-c5block
+# generator-c5
 
 A generator for [Yeoman](http://yeoman.io) which creates CMS Blocks for [concrete5](http://www.concrete5.org/).
 
@@ -29,16 +29,16 @@ $ npm install -g yo
 
 Yeoman travels light. He didn't pack any generators when he moved in. You can think of a generator like a plug-in. You get to choose what type of application you wish to create, such as a Backbone application or even a Chrome extension.
 
-To install generator-c5block from npm, run:
+To install generator-c5 from npm, run:
 
 ```
-$ npm install -g generator-c5block
+$ npm install -g generator-c5
 ```
 
 Finally, initiate the generator:
 
 ```
-$ yo c5block
+$ yo c5
 ```
 
 ### Getting To Know Yeoman
@@ -51,4 +51,3 @@ If you'd like to get to know Yeoman better and meet some of his friends, [Grunt]
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
-

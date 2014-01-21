@@ -4,18 +4,15 @@
 var path    = require('path');
 var helpers = require('yeoman-generator').test;
 
-//////////////////
-//// TODO ///// //
-//////////////////
 
-describe('c5block generator', function () {
+describe('c5 generator', function () {
     beforeEach(function (done) {
         helpers.testDirectory(path.join(__dirname, 'temp'), function (err) {
             if (err) {
                 return done(err);
             }
 
-            this.app = helpers.createGenerator('c5block:app', [
+            this.app = helpers.createGenerator('c5:app', [
                 '../../app'
             ]);
             done();
@@ -30,9 +27,7 @@ describe('c5block generator', function () {
         ];
 
         helpers.mockPrompt(this.app, {
-            'someOption': true,
-            pfields : 'bla',
-            ptitles : 'blubb'
+            'someOption': true
         });
         this.app.options['skip-install'] = true;
         this.app.run({}, function () {

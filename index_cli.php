@@ -1,7 +1,7 @@
 <?php
 //bootstrap concrete5 from packages folder
 defined('STDIN') or die(_("Access Denied. CLI Only")); //Only allow CLI access.
-chdir(dirname(dirname(__DIR__)));
+chdir(dirname(__DIR__));
 
 define('DIR_BASE','.');
 define('C5_ENVIRONMENT_ONLY', true);
