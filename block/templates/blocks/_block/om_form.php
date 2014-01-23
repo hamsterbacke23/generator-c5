@@ -20,23 +20,19 @@ $this->inc('formstyles.inc.css');
     foreach ($omcontents as $row) {
       $row['index']        = $i;
 
-    <% _.each(omfields, function(field) { %>
-
-      <% if (field.type == 'image') { %>
+      <% _.each(omfields, function(field) { %>
+      <% if (field.type == 'image' || field.type == 'plainimage') { %>
       $fileobject          = $row['<%=field.key%>'] > 0 ? File::getByID($row['<%=field.key%>']) : 0;
       $row['fileselector<%=field.key%>'] = $al->image('ccm-b-<%=field.type%>'.$i, 'omcontents['.$i.'][<%=field.key%>]', t('choose.<%=field.type%>'), $fileobject);
       <% } %>
-
       <% if (field.type == 'download') { %>
       $fileobject          = $row['<%=field.key%>'] > 0 ? File::getByID($row['<%=field.key%>']) : 0;
       $row['fileselector<%=field.key%>'] = $al->file('ccm-b-<%=field.type%>'.$i, 'omcontents['.$i.'][<%=field.key%>]', t('choose.<%=field.type%>'), $fileobject);
       <% } %>
-
       <% if (field.type == 'linkintern') { %>
       $row['pageselector<%=field.key%>'] = $pageSelector->selectPage('omcontents['.$i.'][<%=field.key%>]', $row['<%=field.key%>'],'ccm_selectSitemapNode');
       <% } %>
-
-    <% }); %>
+      <% }); %>
 
       echo $this->controller->renderMustacheTemplate($rowtpl,$row);
       $i++;

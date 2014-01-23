@@ -13,6 +13,12 @@ var C5Generator = module.exports = function C5Generator(args, options, config) {
 
     // have Yeoman greet the user.
   console.log(this.yeoman);
+  console.log(
+  '--------------------------\r\n'+
+  '  SB concrete5 generator\r\n'+
+  '--------------------------'
+  );
+
 
   this.hookFor('c5:block', {
     args: args,

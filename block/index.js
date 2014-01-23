@@ -33,15 +33,10 @@ BlockGenerator.prototype.askFor = function askFor() {
 
   if (!this.options.nested) {
     console.log(this.yeoman);
-    console.log(
-    '--------------------------------\r\n'+
-    '  SB concrete5 package generator\r\n'+
-    '--------------------------------'
-    );
+    console.log('-----------------------------------------------------');
+    console.log('The block "' + this.name + '" will now  be created');
+    console.log('-----------------------------------------------------');
   }
-  console.log('-----------------------------------------------------');
-  console.log('The block "' + this.name + '" will now  be created');
-  console.log('-----------------------------------------------------');
 
   this.availFieldTypes = avFields.getFields();
 
@@ -121,11 +116,12 @@ BlockGenerator.prototype.askFor = function askFor() {
 
     this.tabs = props.pfields.split('|').length > 1;
 
-    this.images     = [];
-    this.downloads  = [];
-    this.inlinks    = [];
-    this.tinys      = [];
-    this.checkboxes = [];
+    this.images      = [];
+    this.plainimages = [];
+    this.downloads   = [];
+    this.inlinks     = [];
+    this.tinys       = [];
+    this.checkboxes  = [];
 
     this.om = props.pom;
 
@@ -150,20 +146,21 @@ BlockGenerator.prototype.askFor = function askFor() {
     }
 
     this.hasform      = true; //for now always create form blocks
-    this.fileselector = this.downloads.length > 0 || this.images.length > 0;
+    this.fileselector = this.downloads.length > 0 || this.images.length > 0 || this.plainimages.length > 0;
     this.linkintern   = this.inlinks.length > 0;
     this.tiny         = this.tinys.length > 0;
-    this.image        = this.images.length > 0;
+    this.image        = this.images.length > 0 || this.plainimages.length > 0;
+    this.plainimage   = this.plainimages.length > 0;
     this.download     = this.downloads.length > 0;
 
     this.checkDependencies();
 
     //define handles and titles
     this.pkghandle = '';
-    this.pkgpath = '';
+    this.basepath = '';
     if(props.pautopkg) {
       this.pkghandle = genUtils.getHandle(this, 'sb');
-      this.pkgpath   = this.pkghandle + '/';
+      this.basepath   = 'packages/' + this.pkghandle + '/';
     }
 
     console.log('-----\r\n ... bib bib bibi biiib bib ... \r\n-----');
@@ -237,6 +234,8 @@ BlockGenerator.prototype.processSingleFields = function processSingleFields(str)
       sfResult.key    = fieldParts[1].trim();
       sfResult.dbtype = this.availFieldTypes[fieldParts[0]];
 
+      sfResult = this.mapFieldTypes(sfResult);
+
       this.renderFieldHtml(sfResult);
 
       // add to main array
@@ -248,11 +247,30 @@ BlockGenerator.prototype.processSingleFields = function processSingleFields(str)
   return result;
 }
 
+
+BlockGenerator.prototype.mapFieldTypes = function mapFieldTypes(sfResult) {
+  if(typeof sfResult == 'undefined'){
+    return;
+  }
+  switch(sfResult.type) {
+    case 'plainimage':
+      sfResult.formType = 'image';
+      sfResult.viewType = 'plainimage';
+      break;
+    default:
+      sfResult.formType = sfResult.type;
+      sfResult.viewType = sfResult.type;
+      break;
+  }
+  return sfResult;
+}
+
 BlockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) {
   var tplform;
   var tplview;
   var tplformOm;
-  var fileName;
+  var formFileName;
+  var viewFileName;
   var fileNameOm;
   var omField;
 
@@ -264,27 +282,28 @@ BlockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) {
   sfResult.omformhtml = '';
   sfResult.viewhtml   = '';
 
-  fileName = sfResult.type + '.tpl.php';
+  formFileName = sfResult.formType + '.tpl.php';
+  viewFileName = sfResult.viewType + '.tpl.php';
 
   try {
-    tplform = this.read(this.formtplpath + fileName);
+    tplform = this.read(this.formtplpath + formFileName);
   } catch(e) {
-    console.log('No form template-file: ' + this.formtplpath + fileName + ', using fallbacks if available.');
+    console.log('No form template-file: ' + this.formtplpath + formFileName + ', using fallbacks if available.');
   }
 
   try {
-    tplview = this.read(this.viewtplpath + fileName);
+    tplview = this.read(this.viewtplpath + viewFileName);
   } catch(e) {
-    console.log('No view template-file: ' + this.viewtplpath + fileName + ', using fallbacks if available.');
+    console.log('No view template-file: ' + this.viewtplpath + viewFileName + ', using fallbacks if available.');
   }
 
   if(this.om == true) {
     try {
-      fileNameOm = 'om/' + fileName;
+      fileNameOm = 'om/' + formFileName;
       tplformOm = this.read(this.formtplpath + fileNameOm);
     } catch(e) {
       tplformOm = tplform;
-      console.log('No one-to-many template file for ' + this.formtplpath + fileName);
+      console.log('No one-to-many template file for ' + this.formtplpath + formFileName);
     }
 
     omField = this._.clone(sfResult);
@@ -323,6 +342,9 @@ BlockGenerator.prototype.checkType = function checkType(sfResult) {
   {
   case 'image':
     this.images.push(sfResult.key);
+    break;
+  case 'plainimage':
+    this.plainimages.push(sfResult.key);
     break;
   case 'download':
     this.downloads.push(sfResult.key);
@@ -368,7 +390,7 @@ BlockGenerator.prototype.processFields = function processFields() {
 BlockGenerator.prototype.files = function files() {
 
   //define paths
-  this.blockpath = this.pkgpath + 'blocks/' + this.blockhandle + '/';
+  this.blockpath = this.basepath + 'blocks/' + this.blockhandle + '/';
   this.blockrelpath = 'blocks/' + this.blockhandle + '/';
 
   //do basic files
@@ -384,14 +406,14 @@ BlockGenerator.prototype.files = function files() {
   }
   if(this.tiny) {
     this.template(this.blocktplpath + 'tiny_controller.php', this.blockpath + 'tiny_controller.php');
-    this.template( 'elements/editor_config.php', this.pkgpath + '/elements/editor_config.php');
+    this.template( 'elements/editor_config.php', this.basepath + '/elements/editor_config.php');
   }
   if(this.om) {
-    this.copy('libraries/Mustache.php', this.pkgpath + '/libraries/Mustache.php');
-    this.copy('models/om_record.php', this.pkgpath + '/models/om_record.php');
+    this.copy('libraries/Mustache.php', this.basepath + '/libraries/Mustache.php');
+    this.copy('models/om_record.php', this.basepath + '/models/om_record.php');
     this.copy(this.blocktplpath + 'formstyles.inc.css', this.blockpath + 'formstyles.inc.css');
     this.template(this.blocktplpath + 'auto.js', this.blockpath + 'auto.js');
-    this.template( 'elements/row.php', this.pkgpath + '/elements/row.php');
+    this.template( 'elements/row.php', this.basepath + '/elements/row.php');
     this.template(this.blocktplpath + 'om_controller.php', this.blockpath + 'om_controller.php');
     this.template(this.blocktplpath + 'om_form.php', this.blockpath + 'om_form.php');
   }

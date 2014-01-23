@@ -120,7 +120,6 @@ class <%=blockcchandle%>BlockController extends BlockController {
       <% _.each(omfields, function(omfield) { if(typeof omfield != 'undefined' && omfield.required) { %>
         if (trim($item['<%=omfield.key%>']) == '') {
           $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>fehlt'));
-          break;
         }
       <% } });%>
     }

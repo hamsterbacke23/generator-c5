@@ -9,14 +9,15 @@ var PackageGenerator = module.exports = function PackageGenerator(args, options,
   yeoman.generators.Base.apply(this, arguments);
 
   this.argument('name', { type: String, required: false });
+  this.option('themehandle', { type: String, required: false, defaults: '' });
 
   this.on('end', function () {
     if(this.installpkg) {
-      process.chdir(this.pkgpath);
+      process.chdir(this.basepath);
       this.installDependencies({
         skipInstall: options['skip-install'],
         callback: function() {
-          this.spawnCommand('grunt', ['install']);
+          this.spawnCommand('grunt', ['install', 'cleanlines']);
         }.bind(this)
       });
     }
@@ -30,15 +31,10 @@ PackageGenerator.prototype.askFor = function askFor() {
 
   if (!this.options.nested) {
     console.log(this.yeoman);
-    console.log(
-    '--------------------------------\r\n'+
-    '  SB concrete5 package generator\r\n'+
-    '--------------------------------'
-    );
+    console.log('-----------------------------------------------------');
+    console.log('The package "' + this.name + '" will now  be created');
+    console.log('-----------------------------------------------------');
   }
-  console.log('-----------------------------------------------------');
-  console.log('The package "' + this.name + '" will now  be created');
-  console.log('-----------------------------------------------------');
 
   var defaultPkgDesc = typeof this.options.pkgdesc != 'undefined' ? this.options.pkgdesc : 'My Package';
   var askTitle = typeof this.name == 'undefined' || !this.name ? true : false;
@@ -67,13 +63,13 @@ PackageGenerator.prototype.askFor = function askFor() {
       message: 'Include command line interface?',
       default: true
     },{
-        when: function(response) {
-          return response.pkgcli == true;
-        },
-        name: 'pkginstall',
-        type: 'confirm',
-        message: 'Try to install Package?',
-        default: true
+      when: function(response) {
+        return response.pkgcli == true;
+      },
+      name: 'pkginstall',
+      type: 'confirm',
+      message: 'Install Grunt Tasks and try installing the package in concrete5?',
+      default: true
     }];
 
   this.prompt(prompts, function (props) {
@@ -84,10 +80,11 @@ PackageGenerator.prototype.askFor = function askFor() {
     this.blockhandle  = typeof this.options.blockhandle == 'undefined' ? '' : this.options.blockhandle;
     this.dependencies = typeof this.options.dependencies == 'undefined' ? '' : this.options.dependencies;
     this.name         = askTitle ? props.ppkgname : this.name;
+    this.themehandle  = this.options.themehandle;
 
     //define handles and titles
     this.pkghandle   = genUtils.getHandle(this);
-    this.pkgpath     = this.pkghandle + '/';
+    this.basepath     = 'packages/' + this.pkghandle + '/';
     this.pkgcchandle = this._.classify(this.pkghandle).trim();
 
     cb();
@@ -98,14 +95,14 @@ PackageGenerator.prototype.askFor = function askFor() {
 
 
 PackageGenerator.prototype.projectfiles = function projectfiles() {
-  this.template(this.pkgtplpath + '_controller.php', this.pkgpath + 'controller.php');
-  this.copy(this.pkgtplpath + '_cli/_install_cli.php', this.pkgpath + 'cli/install_cli.php');
-  this.copy(this.pkgtplpath + '_cli/_uninstall_cli.php', this.pkgpath + 'cli/uninstall_cli.php');
-  this.copy(this.pkgtplpath + '_cli/_upgrade_cli.php', this.pkgpath + 'cli/upgrade_cli.php');
-  this.copy(this.pkgtplpath + '_index_cli.php', this.pkgpath + 'index_cli.php');
-  this.copy(this.pkgtplpath + 'icon.png', this.pkgpath + 'icon.png');
-  this.template(this.pkgtplpath +'_Gruntfile.js', this.pkgpath + 'Gruntfile.js');
-  this.template(this.pkgtplpath + '_package.json', this.pkgpath + 'package.json');
-  this.template(this.pkgtplpath + '_readme.md', this.pkgpath + 'readme.md');
+  this.template(this.pkgtplpath + '_controller.php', this.basepath + 'controller.php');
+  this.copy(this.pkgtplpath + '_cli/_install_cli.php', this.basepath + 'cli/install_cli.php');
+  this.copy(this.pkgtplpath + '_cli/_uninstall_cli.php', this.basepath + 'cli/uninstall_cli.php');
+  this.copy(this.pkgtplpath + '_cli/_upgrade_cli.php', this.basepath + 'cli/upgrade_cli.php');
+  this.copy(this.pkgtplpath + '_index_cli.php', this.basepath + 'index_cli.php');
+  this.copy(this.pkgtplpath + 'icon.png', this.basepath + 'icon.png');
+  this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
+  this.template(this.pkgtplpath + '_package.json', this.basepath + 'package.json');
+  this.template(this.pkgtplpath + '_readme.md', this.basepath + 'readme.md');
 };
 

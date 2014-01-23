@@ -11,7 +11,7 @@ $form = Loader::helper('form');
   <h3 class="handle">row</h3>
   <div class="form-row panel">
 
-  <% _.each(omfields, function(field) { %><%=field.omformhtml %><% }); %>
+    <% _.each(omfields, function(field) { %><%=field.omformhtml %><% }); %>
 
     {{#id}}
       <input type="hidden" name="omcontents[{{index}}][id]" value="{{id}}">

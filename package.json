@@ -1,7 +1,7 @@
 {
   "name": "generator-c5",
   "version": "1.5.1",
-  "description": "A generator for Yeoman, generates concrete5 blocks in packages",
+  "description": "A generator for Yeoman, generates concrete5 blocks, packages etc.",
   "keywords": [
     "yeoman-generator",
     "concrete5"
@@ -9,8 +9,8 @@
   "homepage": "https://github.com/hamsterbacke23/generator-c5",
   "bugs": "https://github.com/hamsterbacke23/generator-c5/issues",
   "author": {
-    "name": "",
-    "email": "",
+    "name": "tobias schmidt",
+    "email": "tobias.schmidt@seitenbau.com",
     "url": "https://github.com/hamsterbacke23"
   },
   "main": "app/index.js",

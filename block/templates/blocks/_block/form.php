@@ -25,10 +25,6 @@
     <%}%>
     <% }); %>
   );
-
-  if (isset($canUserEditEtrackerElements) && $canUserEditEtrackerElements === true) {
-    $tabs[] = array('etracker', t('Etracker'));
-  }
   echo Loader::helper('concrete/interface')->tabs($tabs);
 ?>
 

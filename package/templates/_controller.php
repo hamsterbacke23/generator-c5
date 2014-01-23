@@ -23,9 +23,14 @@ class <%=pkgcchandle+'Package'%> extends Package
   {
     $this->checkDependencies();
     $pkg = parent::install();
-    foreach ($this->blockHandles as $blockHandle) {
-      BlockType::installBlockTypeFromPackage($blockHandle, $pkg);
-    };
+    if(!empty($this->blockHandles)) {
+      foreach ($this->blockHandles as $blockHandle) {
+        BlockType::installBlockTypeFromPackage($blockHandle, $pkg);
+      };
+    }
+    <% if(themehandle) { %>
+    PageTheme::add('<%=themehandle%>', $pkg);
+    <% } %>
   }
 
   public function upgrade()
@@ -36,12 +41,15 @@ class <%=pkgcchandle+'Package'%> extends Package
     Loader::model('block_types');
     $pkg = parent::getByHandle($this->pkgHandle);
 
-    foreach ($this->blockHandles as $blockHandle) {
-      if(!is_object(BlockType::getByHandle($blockHandle)))
-      {
-        BlockType::installBlockTypeFromPackage($blockHandle, $pkg);
+    if(!empty($this->blockHandles)) {
+      foreach ($this->blockHandles as $blockHandle) {
+        if(!is_object(BlockType::getByHandle($blockHandle)))
+        {
+          BlockType::installBlockTypeFromPackage($blockHandle, $pkg);
+        }
       }
     }
+
   }
 
   public function checkDependencies()

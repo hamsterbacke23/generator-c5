@@ -18,6 +18,7 @@ function getFields () {
   availFieldTypes['checkbox']   = 'I1';
   availFieldTypes['select']     = 'C';
   availFieldTypes['image']      = 'I';
+  availFieldTypes['plainimage'] = 'I';
   availFieldTypes['download']   = 'I';
   availFieldTypes['linkintern'] = 'I';
 
