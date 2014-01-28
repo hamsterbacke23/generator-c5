@@ -62,7 +62,7 @@ module.exports = function (grunt) {
         outputStyle : 'compressed'
       },
     },
-    <% if(prepros) {%>
+    <% if(prepros != 'none') {%>
     watch: {
       scripts: {
         files: ['css/<%=prepros%>/**'],
@@ -77,7 +77,7 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-bower-install');
 
-  <% if(prepros) {%>
+  <% if(prepros != 'none') {%>
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-<%=prepros%>');
   <% }%>

@@ -1,10 +1,10 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 
-<% if (download == true || image == true) { %>
+<% if (download || image) { %>
 $al = Loader::helper('concrete/asset_library');
 <% } %>
 
-<% if (linkintern == true) { %>
+<% if (linkintern) { %>
 $pageSelector = Loader::helper('form/page_selector');
 <% } %>
 
@@ -31,6 +31,9 @@ $this->inc('formstyles.inc.css');
       <% } %>
       <% if (field.type == 'linkintern') { %>
       $row['pageselector<%=field.key%>'] = $pageSelector->selectPage('omcontents['.$i.'][<%=field.key%>]', $row['<%=field.key%>'],'ccm_selectSitemapNode');
+      <% } %>
+      <% if (field.type == 'datetime') { %>
+      $row['datetime<%=field.key%>'] = Loader::helper('form/date_time')->datetime('omcontents['.$i.'][<%=field.key%>]', $row['<%=field.key%>']);
       <% } %>
       <% }); %>
 

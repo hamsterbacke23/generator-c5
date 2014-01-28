@@ -10,9 +10,10 @@ var ThemeGenerator = module.exports = function ThemeGenerator(args, options, con
   this.argument('name', { type: String, required: false });
 
   var runGruntTask = function() {
-    if(this.prepros){
-      process.chdir(this.basepath + 'themes/' + this.themehandle);
-      this.spawnCommand('grunt', ['assets','watch']);
+    process.chdir(this.basepath + 'themes/' + this.themehandle);
+    this.spawnCommand('grunt', ['assets']);
+    if(this.prepros != 'none'){
+      this.spawnCommand('grunt', ['watch']);
     }
   };
 
@@ -97,7 +98,10 @@ ThemeGenerator.prototype.askFor = function askFor() {
     type: 'list',
     name: 'prepros',
     message: 'Preprocessor?',
-    choices : ['sass','less',{name: 'None', value : false}],
+    choices : [
+      {name:'Sass', value: 'sass'},
+      {name: 'Less', value : 'less'},
+      {name: 'None', value : 'none'}],
     default: 'sass'
   },{
     type: 'confirm',

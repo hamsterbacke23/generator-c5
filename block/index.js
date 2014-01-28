@@ -38,17 +38,12 @@ BlockGenerator.prototype.askFor = function askFor() {
     console.log('-----------------------------------------------------');
   }
 
-  this.availFieldTypes = avFields.getFields();
-
-
-  var fieldInputMsg =
-      '--------------------------------------------------------------------------- \r\n'
-    + 'Please enter the fields you want in "type:name[__r]" format comma-separated \r\n '
-    + '(Fieldtypes: ' + Object.keys(this.availFieldTypes).join(', ') + '\r\n'
-    + '--------------------------------------------------------------------------- \r\n'
-    + 'EXAMPLE: input:heading__r,tiny:text,checkbox:displayicon,linkintern:bcID' + '\r\n';
-
   var askTitle = typeof this.name == 'undefined' || !this.name ? true : false;
+
+  var fieldMessage = avFields.getFieldsMessage();
+  var omFieldMessage = avFields.getFieldsMessage('om');
+
+  this.availFieldTypes = avFields.getFields()['normal'];
 
   var prompts = [
   {
@@ -86,10 +81,13 @@ BlockGenerator.prototype.askFor = function askFor() {
     name: 'pomfields',
     message: '--------------------------\r\n' +
             '>> Fields for one row << \r\n' +
-            fieldInputMsg + '\r\n' +
+            omFieldMessage + '\r\n' +
             'Row fields: ',
     validate: function(input){
-      return input.length > 0 && input.indexOf('|') < 0;
+      var nameok = validateForbiddenFields(input);
+      return input.length > 0
+          && input.indexOf('|') < 0
+          && nameok;
     }
   },{
     type: 'input',
@@ -97,13 +95,26 @@ BlockGenerator.prototype.askFor = function askFor() {
     message: '--------------------------\r\n' +
              '>> General block fields << \r\n' +
              'Use "|" to separate Tabs \r\n' +
-             fieldInputMsg  + ' \r\n' +
+             fieldMessage  + ' \r\n' +
              'Fields: ',
 
     validate: function(input){
-      return input.length > 0;
+      var nameok = validateForbiddenFields(input);
+      return input.length > 0 && nameok;
   }
   }];
+
+
+  var validateForbiddenFields = function(input) {
+    var forbiddenFields = ['blob', 'file'];
+    for (var i = 0; i < forbiddenFields.length; i++) {
+      if(input.indexOf(forbiddenFields[i] + ':') > -1
+          || input.indexOf(':' + forbiddenFields[i]) > -1) {
+        return false;
+      }
+    };
+    return true;
+  }
 
   this.prompt(prompts, function (props) {
     this.pfields    = props.pfields;
@@ -122,6 +133,7 @@ BlockGenerator.prototype.askFor = function askFor() {
     this.inlinks     = [];
     this.tinys       = [];
     this.checkboxes  = [];
+    this.datetimes   = [];
 
     this.om = props.pom;
 
@@ -145,13 +157,15 @@ BlockGenerator.prototype.askFor = function askFor() {
       this.tabfields = this.allFields.tabfields;
     }
 
-    this.hasform      = true; //for now always create form blocks
-    this.fileselector = this.downloads.length > 0 || this.images.length > 0 || this.plainimages.length > 0;
-    this.linkintern   = this.inlinks.length > 0;
-    this.tiny         = this.tinys.length > 0;
-    this.image        = this.images.length > 0 || this.plainimages.length > 0;
-    this.plainimage   = this.plainimages.length > 0;
-    this.download     = this.downloads.length > 0;
+    this.hasform         = true; //for now always create form blocks
+    this.fileselector    = this.downloads.length > 0 || this.images.length > 0 || this.plainimages.length > 0;
+    this.linkintern      = this.inlinks.length > 0;
+    this.tiny            = this.tinys.length > 0;
+    this.image           = this.images.length > 0 || this.plainimages.length > 0;
+    this.responsiveimage = this.images.length > 0;
+    this.plainimage      = this.plainimages.length > 0;
+    this.download        = this.downloads.length > 0;
+    this.datetime        = this.datetimes.length > 0;
 
     this.checkDependencies();
 
@@ -176,10 +190,10 @@ BlockGenerator.prototype.askFor = function askFor() {
 BlockGenerator.prototype.checkDependencies = function checkDependencies() {
     //check dependieces
     this.dependencies = [];
-    if(this.linkintern   == true) {
+    if(this.linkintern) {
       this.dependencies.push('"sb_links"');
     }
-    if(this.image == true) {
+    if(this.responsiveimage) {
       this.dependencies.push('"sb_images"');
     }
     this.dependencies = this.dependencies.join(',');
@@ -232,7 +246,9 @@ BlockGenerator.prototype.processSingleFields = function processSingleFields(str)
     {
       sfResult.type   = fieldParts[0].trim();
       sfResult.key    = fieldParts[1].trim();
-      sfResult.dbtype = this.availFieldTypes[fieldParts[0]];
+      console.log(this.availFieldTypes[fieldParts[0]]['dbkey']);
+      console.log(fieldParts[0]);
+      sfResult.dbtype = this.availFieldTypes[fieldParts[0]]['dbkey'];
 
       sfResult = this.mapFieldTypes(sfResult);
 
@@ -297,7 +313,7 @@ BlockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) {
     console.log('No view template-file: ' + this.viewtplpath + viewFileName + ', using fallbacks if available.');
   }
 
-  if(this.om == true) {
+  if(this.om) {
     try {
       fileNameOm = 'om/' + formFileName;
       tplformOm = this.read(this.formtplpath + fileNameOm);
@@ -357,6 +373,9 @@ BlockGenerator.prototype.checkType = function checkType(sfResult) {
     break;
   case 'checkbox':
     this.checkboxes.push(sfResult.key);
+    break;
+  case 'datetime':
+    this.datetimes.push(sfResult.key);
     break;
   }
 

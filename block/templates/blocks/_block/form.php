@@ -1,20 +1,20 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
-<% if(linkintern == true ) { %>$pageSelector = Loader::helper('form/page_selector');<% } %>
-<% if(fileselector == true ) { %>$al = Loader::helper('concrete/asset_library');<% } %>
-<% if(tiny == true ) { %>Loader::packageElement('editor_config', $this->controller->getPkgHandle(), array('textEditorHeight'=>250));<% } %>
+<% if(linkintern ) { %>$pageSelector = Loader::helper('form/page_selector');<% } %>
+<% if(fileselector ) { %>$al = Loader::helper('concrete/asset_library');<% } %>
+<% if(tiny ) { %>Loader::packageElement('editor_config', $this->controller->getPkgHandle(), array('textEditorHeight'=>250));<% } %>
 ?>
-<% if(tabs != true ) {%>
+<% if(!tabs) {%>
 <% _.each(fields, function(field) { %>
 <%=field.formhtml %>
 <% }); %>
 <%}%>
 
-<% if(om == true) {%>
+<% if(om) {%>
 <?php $this->inc('om_form.php', array('controller'=>$controller)); ?>
 <%}%>
 
 <% // TABS %>
-<% if(tabs == true) {%>
+<% if(tabs) {%>
 <h4 class="kacheltitel"><?php echo t('tile.entertitle')?></h4>
 <?php
   $tabs = array(
@@ -39,3 +39,15 @@
 </div>
 
 <%}//tabs true%>
+
+<% if(datetime) { %>
+<?php
+///////////////////////////////////////////////////////////////////////////
+// DATEPICKER                                                            //
+// move this to site/config.php and uncomment                            //
+// define('DATE_FORM_HELPER_FORMAT_HOUR', 24);                           //
+// define('DATE_APP_GENERIC_MDY', 'd.m.Y'); // fuer PHP Ausgaben         //
+// define('DATE_APP_DATE_PICKER', 'dd.mm.yy'); // fuer jQuery Datepicker //
+///////////////////////////////////////////////////////////////////////////
+ ?>
+<%}//datetime true%>

@@ -1,14 +1,15 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 $form = Loader::helper('form');
-<% if(linkintern == true ) { %>$pageSelector = Loader::helper('form/page_selector');<% } %>
-<% if(fileselector == true ) { %>$al = Loader::helper('concrete/asset_library');<% } %>
+<% if(linkintern) { %>$pageSelector = Loader::helper('form/page_selector');<% } %>
+<% if(fileselector) { %>$al = Loader::helper('concrete/asset_library');<% } %>
 ////////////////////////////////////////////////
 // Mustache Template to be used in js as well //
 ////////////////////////////////////////////////
 ?>
 
 <div class="collection-group">
-  <h3 class="handle">row</h3>
+  <?php $rowTitle = isset($omcontents['{{index}}']['heading']) ? $omcontents['{{index}}']['heading'] : 'Row'; //change me?! ?>
+  <h3 class="handle"><?=$rowTitle?></h3>
   <div class="form-row panel">
 
     <% _.each(omfields, function(field) { %><%=field.omformhtml %><% }); %>

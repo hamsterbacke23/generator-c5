@@ -17,7 +17,7 @@ var PackageGenerator = module.exports = function PackageGenerator(args, options,
       this.installDependencies({
         skipInstall: options['skip-install'],
         callback: function() {
-          this.spawnCommand('grunt', ['install', 'cleanlines']);
+          this.spawnCommand('grunt', ['install', 'cleanlines','langs']);
         }.bind(this)
       });
     }
@@ -101,6 +101,7 @@ PackageGenerator.prototype.projectfiles = function projectfiles() {
   this.copy(this.pkgtplpath + '_cli/_upgrade_cli.php', this.basepath + 'cli/upgrade_cli.php');
   this.copy(this.pkgtplpath + '_index_cli.php', this.basepath + 'index_cli.php');
   this.copy(this.pkgtplpath + 'icon.png', this.basepath + 'icon.png');
+  this.directory(this.pkgtplpath + 'languages', this.basepath + 'languages');
   this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
   this.template(this.pkgtplpath + '_package.json', this.basepath + 'package.json');
   this.template(this.pkgtplpath + '_readme.md', this.basepath + 'readme.md');

@@ -1,5 +1,5 @@
 <? defined('C5_EXECUTE') or die("Access Denied."); ?>
-<% if(plainimage == true) { %><?php $im = Loader::helper('image');?><% } // endif%>
+<% if(plainimage) { %><?php $im = Loader::helper('image');?><% } // endif%>
 
 <% _.each(fields, function(field) { %>
 <% if(field.viewhtml != '') { %>
@@ -19,38 +19,38 @@
 <% } //fieldtype endif%>
 <%});%>
 
-<% if(om == true) { %>
+<% if(om) { %>
 <?php if(isset($omcontents) && !empty($omcontents)) { ?>
 <ul>
-    <?php foreach ($omcontents as $row) { ?>
+  <?php foreach ($omcontents as $row) { ?>
     <?php extract($row); //generator-c5 note: this needs check if something is overwritten ?>
     <li>
 
-<% _.each(omfields, function(field) { %>
-<% if(field.viewhtml != '') { %>
-<%=field.viewhtml%>
-<% }else if(field.type == 'tiny') { %>
+    <% _.each(omfields, function(field) { %>
+    <% if(field.viewhtml != '') { %>
+    <%=field.viewhtml%>
+    <% }else if(field.type == 'tiny') { %>
 
-<?php if($<%=field.key%>) {?>
-<?=$<%=field.key%>?>
-<?php }//endif?>
+    <?php if($<%=field.key%>) {?>
+    <?=$<%=field.key%>?>
+    <?php }//endif?>
 
-<%} else {%>
+    <%} else {%>
 
-<?php if($<%=field.key%>) {?>
-<?=htmlspecialchars($<%=field.key%>, ENT_QUOTES, 'utf-8', false)?>
-<?php }//endif?>
+    <?php if($<%=field.key%>) {?>
+    <?=htmlspecialchars($<%=field.key%>, ENT_QUOTES, 'utf-8', false)?>
+    <?php }//endif?>
 
-<% } //fieldtype endif%>
-<%});%>
+    <% } //fieldtype endif%>
+    <%});%>
 
     </li>
-    <?php }//endforeach ?>
+  <?php }//endforeach ?>
 </ul>
 <?php }//endif ?>
 <% } // endif%>
 
-<% if(image == true) { %>
+<% if(image) { %>
 <?php
 //////////////////////////////////////////////
 // MOVE THIS TO THEME HEADER and uncomment: //

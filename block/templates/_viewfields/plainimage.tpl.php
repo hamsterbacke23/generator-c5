@@ -1,7 +1,8 @@
 <?php
+if($<%=field.key%>) {
 $imgWidth = 640;
 $imgHeight = 480;
-$f  = File::getByID($<%=field.key%>);
-$fv = $f->getApprovedVersion();
-echo $im->outputThumbnail($f, $imgWidth, $imgHeight, 'image alt text');
+$<%=field.key%>f  = File::getByID($<%=field.key%>);
+echo $im->outputThumbnail($<%=field.key%>f, $imgWidth, $imgHeight, 'image alt text');
+}
 ?>

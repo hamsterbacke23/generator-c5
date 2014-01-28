@@ -10,7 +10,7 @@
     <% }); %>
   </table>
 
-  <% if(om == true){ %>
+  <% if(om){ %>
   <table name="bt<%=blockcchandle%>Content">
     <field name="id" type="I">
       <key />

@@ -25,6 +25,13 @@ module.exports = function (grunt) {
       },
       uninstall : {
         command: 'php cli/uninstall_cli.php',
+      },
+      createlangs : {
+        command: function(lang) {
+          return "find ./ -iname '*.php' -exec xgettext --default-domain=messages --from-code=utf-8 --keyword=t --language=PHP -p ./languages/"+lang+"/LC_MESSAGES/ -j {} \\;";
+        },
+        stdout: false,
+        stderr: false
       }
     },
     clean: {
@@ -42,17 +49,31 @@ module.exports = function (grunt) {
           }
         ]
       }
+    },
+    trimtrailingspaces: {
+      main: {
+        src: ['**/*.php'],
+        options: {
+          filter: 'isFile',
+          encoding: 'utf8',
+          failIfTrimmed: false
+        }
+      }
     }
+
 
 
   });
 
+  grunt.loadNpmTasks('grunt-trimtrailingspaces');
   grunt.loadNpmTasks('grunt-regex-replace');
   grunt.loadNpmTasks('grunt-version');
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('cleanlines', ['regex-replace:lines:remove']);
+  var lang = grunt.option('lang') || 'de_DE';
+  grunt.registerTask('langs', ['exec:createlangs:' + lang]);
+  grunt.registerTask('cleanlines', ['trimtrailingspaces', 'regex-replace:lines:remove']);
   grunt.registerTask('upgrade', ['version','exec:upgrade']);
   grunt.registerTask('build', ['set_vtype:major', 'version','exec:upgrade','clean:build']);
   grunt.registerTask('install', ['exec:install']);

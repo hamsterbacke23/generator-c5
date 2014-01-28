@@ -1,9 +1,9 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
-<% if(tiny == true ) { %>
+<% if(tiny ) { %>
 require_once('tiny_controller.php');
 <% } %>
-<% if(om == true){ %>
+<% if(om){ %>
 require_once('om_controller.php');
 class <%=blockcchandle%>BlockController extends <%=blockcchandle%>OneToManyController {
 <% } else { %>
@@ -17,7 +17,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
   protected $btCacheBlockOutput                   = true;
   protected $btCacheBlockOutputOnPost             = true;
   protected $btCacheBlockOutputForRegisteredUsers = true;
-  <% if(om == true){ %>
+  <% if(om){ %>
   //one to many stuff
   protected $omTable      = 'bt<%=blockcchandle%>Content';
   protected $omKey        = 'omcontents';
@@ -41,34 +41,34 @@ class <%=blockcchandle%>BlockController extends BlockController {
     return $this->pkgHandle;
   }
 
-  <% if(om == true || tiny == true){ %>
+  <% if(om || tiny){ %>
 
   public function edit() {
-    <% if(om == true){ %>
+    <% if(om){ %>
     $this->setOmForm();
     <% } %>
-    <% if(tiny == true){ %>
+    <% if(tiny){ %>
     $this->setupTinys();
     <% } %>
   }
 
   public function add() {
-    <% if(om == true){ %>
+    <% if(om){ %>
     $this->setOmForm();
     <% } %>
-    <% if(tiny == true){ %>
+    <% if(tiny){ %>
     $this->setupTinys();
     <% } %>
   }
   <% } %>
 
-  <% if(om == true || image == true){ %>
+  <% if(om || image){ %>
   public function view() {
-    <% if(om == true){ %>
+    <% if(om){ %>
     $this->setOmContent();
     <% } %>
 
-    <% if(image == true){ %>
+    <% if(image){ %>
     <% _.each(_.uniq(images), function(imageKey) { %>
     $this->set('<%=imageKey%>Img', $this->buildImage($this-><%=imageKey%>));
     <% }); %>
@@ -77,16 +77,19 @@ class <%=blockcchandle%>BlockController extends BlockController {
   <% } %>
 
 
-  <% if(tiny == true){ %>
+  <% if(tiny || datetime){ %>
+  <% if(tiny){ %>
   private function setupTinys()
   {
     <% _.each(_.uniq(tinys), function(tinykey) { %>
     $this-><%=blockhandle%><%=tinykey%>Tiny = new <%=blockhandle%>Tiny($this-><%=tinykey%>);
     <% }); %>
   }
+  <% } //tiny true %>
 
   public function save($args)
   {
+    <% if(tiny){ %>
     $tiny = new <%=blockhandle%>Tiny();
     <% _.each(_.uniq(tinys), function(tinykeyb) { %>
     $<%=tinykeyb%> = $tiny->translateTo($args['<%=tinykeyb%>']);
@@ -95,39 +98,46 @@ class <%=blockcchandle%>BlockController extends BlockController {
     <% _.each(_.uniq(checkboxes), function(cbkey) { %>
     $args['<%=cbkey%>'] = isset($args['<%=cbkey%>']) && $args['<%=cbkey%>'] == 'on' ? 1 : 0;
     <% }); %>
+    <% } //tiny true %>
 
+    <% if(datetime){ %>
+    $dtt = Loader::helper('form/sb_date_time', 'sb_fachforen');
+    <% _.each(_.uniq(datetimes), function(datetimekey) { %>
+    $args['<%=datetimekey%>'] = $dtt->translate('<%=datetimekey%>');
+    <% }); %>
+    <% } //datetime true %>
 
     parent::save($args);
   }
-  <% } //tiny true %>
+  <% } //tiny or datetime true %>
 
   public function validate($args) {
     $e = Loader::helper('validation/error');
 
     <% _.each(fields, function(field) { %>
     <% if(field.required) { %>
-    if (trim($args['<%=field.key%>']) == '') {
+    if (!trim($args['<%=field.key%>'])) {
       $e->add(t('<%=blockhandle%>.error.<%=field.key%>fehlt'));
     }
     <% } %>
     <% }); %>
 
-    <% if(om == true){ %>
+    <% if(om){ %>
     foreach ($args[$this->omKey] as $item) {
       if($item['delete'] == 'yes') {
         continue;
       }
       <% _.each(omfields, function(omfield) { if(typeof omfield != 'undefined' && omfield.required) { %>
-        if (trim($item['<%=omfield.key%>']) == '') {
-          $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>fehlt'));
-        }
+      if (!trim($item['<%=omfield.key%>'])) {
+        $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>fehlt'));
+      }
       <% } });%>
     }
     <% } %>
     return $e;
   }
 
-  <% if(image == true){ %>
+  <% if(image){ %>
   private function buildImage($fID, $attrs = false)
   {
    $ih = Loader::helper('image_builder', 'sb_images');
@@ -140,7 +150,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
 
 
 
-  <% if(download == true){ %>
+  <% if(download){ %>
   public function getFileData($fID)
   {
     $fileObject = File::getByID($fID);
@@ -177,7 +187,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
   <% } %>
 
 
-  <% if(linkintern == true){ %>
+  <% if(linkintern){ %>
   /**
    * Creates a link from the cid
    * @param $bcID the collection ID
