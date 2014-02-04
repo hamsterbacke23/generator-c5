@@ -18,6 +18,8 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
   protected $omTable      = '';
   protected $omKey        = '';
   protected $omCheckboxes = array();
+  protected $rowTplName = 'row';
+
 
   public function setOmContent()
   {
@@ -31,6 +33,7 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
     $this->setOmContent();
     $template = $this->loadMustacheTemplate('row');
     $this->set('rowtpl', $template);
+    $this->set('controller', $this);
   }
 
   private function cmp($a,$b)
@@ -42,12 +45,13 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
    * @param  string $name
    * @return string
    */
-  private function loadMustacheTemplate($name)
+  private function loadMustacheTemplate($name, $data = array())
   {
     ob_start();
     Loader::packageElement(
       $name,
-      $this->getPkgHandle()
+      $this->getPkgHandle(),
+      array('data' => $data)
     );
     $mustacheTemplate =  ob_get_contents();
     ob_end_clean();
@@ -59,10 +63,17 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
    * @param  array  $data
    * @return string
    */
-  public function renderMustacheTemplate($template, $data)
+  public function renderMustacheTemplate($data = array())
   {
+    //setup default data
+    if(empty($data)){
+      $data = array('index'=>'0');
+    }
+
+    $template = $this->loadMustacheTemplate($this->rowTplName, $data); //existing data needs to be prefilled via php with $data
+
     Loader::library('Mustache', $this->getPkgHandle());
-    $m = new Mustache;
+    $m = new Mustache_Engine;
     return $m->render($template, $data);
   }
 

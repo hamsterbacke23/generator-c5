@@ -8,8 +8,7 @@ $form = Loader::helper('form');
 ?>
 
 <div class="collection-group">
-  <?php $rowTitle = isset($omcontents['{{index}}']['heading']) ? $omcontents['{{index}}']['heading'] : 'Row'; //change me?! ?>
-  <h3 class="handle"><?=$rowTitle?></h3>
+  <h3 class="handle">{{heading}}{{^heading}}Row{{index}}{{/heading}}</h3>
   <div class="form-row panel">
 
     <% _.each(omfields, function(field) { %><%=field.omformhtml %><% }); %>

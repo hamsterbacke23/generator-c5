@@ -50,7 +50,7 @@
 <?php }//endif ?>
 <% } // endif%>
 
-<% if(image) { %>
+<% if(responsiveimage) { %>
 <?php
 //////////////////////////////////////////////
 // MOVE THIS TO THEME HEADER and uncomment: //

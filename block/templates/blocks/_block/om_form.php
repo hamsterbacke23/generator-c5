@@ -14,37 +14,19 @@ $this->inc('formstyles.inc.css');
 <template class="rowtpl"><?=$rowtpl?></template>
 
 <section class="omcontents sortable-links">
-  <?php
-  $i = 0;
-  if(!empty($omcontents)) {
-    foreach ($omcontents as $row) {
-      $row['index']        = $i;
-
-      <% _.each(omfields, function(field) { %>
-      <% if (field.type == 'image' || field.type == 'plainimage') { %>
-      $fileobject          = $row['<%=field.key%>'] > 0 ? File::getByID($row['<%=field.key%>']) : 0;
-      $row['fileselector<%=field.key%>'] = $al->image('ccm-b-<%=field.type%>'.$i, 'omcontents['.$i.'][<%=field.key%>]', t('choose.<%=field.type%>'), $fileobject);
-      <% } %>
-      <% if (field.type == 'download') { %>
-      $fileobject          = $row['<%=field.key%>'] > 0 ? File::getByID($row['<%=field.key%>']) : 0;
-      $row['fileselector<%=field.key%>'] = $al->file('ccm-b-<%=field.type%>'.$i, 'omcontents['.$i.'][<%=field.key%>]', t('choose.<%=field.type%>'), $fileobject);
-      <% } %>
-      <% if (field.type == 'linkintern') { %>
-      $row['pageselector<%=field.key%>'] = $pageSelector->selectPage('omcontents['.$i.'][<%=field.key%>]', $row['<%=field.key%>'],'ccm_selectSitemapNode');
-      <% } %>
-      <% if (field.type == 'datetime') { %>
-      $row['datetime<%=field.key%>'] = Loader::helper('form/date_time')->datetime('omcontents['.$i.'][<%=field.key%>]', $row['<%=field.key%>']);
-      <% } %>
-      <% }); %>
-
-      echo $this->controller->renderMustacheTemplate($rowtpl,$row);
-      $i++;
-    }//endforeach
-  } else {
-    $row['index']   = $i;
-    $row['heading'] = 'Neue Slide';
-    echo $this->controller->renderMustacheTemplate($rowtpl,$row);
-  }//endif ?>
+<?php
+$i = 0;
+if(!empty($omcontents)) {
+  // render existing rows //
+  foreach ($omcontents as $row) {
+    $row['index'] = $i;
+    echo $this->controller->renderMustacheTemplate($row);
+    $i++;
+  }//endforeach
+} else {
+  // render single empty row //
+  echo $this->controller->renderMustacheTemplate(); //leave array empty!
+}//endif ?>
 </section>
 
 <button class="addrow"><?=t('<%=blockhandle%>.button.addrow')?><img src="<?= ASSETS_URL_IMAGES ?>/icons/add.png" class="addicon" height="14" width="14"></button>

@@ -246,8 +246,6 @@ BlockGenerator.prototype.processSingleFields = function processSingleFields(str)
     {
       sfResult.type   = fieldParts[0].trim();
       sfResult.key    = fieldParts[1].trim();
-      console.log(this.availFieldTypes[fieldParts[0]]['dbkey']);
-      console.log(fieldParts[0]);
       sfResult.dbtype = this.availFieldTypes[fieldParts[0]]['dbkey'];
 
       sfResult = this.mapFieldTypes(sfResult);

@@ -106,11 +106,27 @@ $(function() {
     axis: 'y'
   });
 
-
-  //update newRowTitle
+    //update newRowTitle
   $blockForm.on('focusout', titleInputSelector, function() {
     updateTitleBar($(this));
   });
+
+  /////////////////////////
+  // Radio Button Panels //
+  /////////////////////////
+  //var $radioButtons = $('input[type="radio"]');
+  // $('#ccm-tab-content-media .radio-group, #ccm-tab-content-link .radio-group').hide();
+  // $radioButtons.each(function(){
+  //   if($(this).attr('checked')) {
+  //     $(this).parent().next('.radio-group').show();
+  //   }
+  // });
+
+  // $radioButtons.click(function(){
+  //   $section = $(this).closest('section');
+  //   $section.find('.radio-group').hide();
+  //   $(this).parent().next('.radio-group').show();
+  // });
 
 });
 

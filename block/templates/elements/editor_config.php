@@ -39,6 +39,8 @@ $(function(){
     theme : "advanced",
     theme_advanced_buttons1 : "undo,redo,|,bold,bullist,numlist",
     // theme_advanced_buttons2 : "tablecontrols,|,help,attribs,removeformat",
+    // theme_advanced_buttons1 : "undo,redo,|,bold,bullist,numlist,|,link,unlink,anchor,|,blockquote,cite,abbr,|,pastetext,selectall",
+    // theme_advanced_buttons2 : "tablecontrols,|,help,attribs,removeformat",
     theme_advanced_buttons2 : "",
     theme_advanced_buttons3 : "",
     theme_advanced_toolbar_location : "top",

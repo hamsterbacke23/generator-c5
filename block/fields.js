@@ -19,10 +19,10 @@ function defineFields () {
     {type: 'textarea', dbkey: 'X2', om: true},
     {type: 'checkbox', dbkey: 'I1', om: true},
     {type: 'select', dbkey: 'C', om: true},
-    {type: 'image', dbkey: 'I', om: true},
     {type: 'plainimage', dbkey: 'I', om: true},
     {type: 'download', dbkey: 'I', om: true},
     {type: 'linkintern', dbkey: 'I', om: true},
+    {type: 'image', dbkey: 'I', om: false},
     {type: 'tiny', dbkey: 'X2', om: false},
     {type: 'datetime', dbkey: 'TS', om: false}
   ];

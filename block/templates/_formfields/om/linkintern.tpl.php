@@ -1,12 +1,8 @@
-<div class="control-group">
+<div class="control-group radio-group">
   <label class="control-label" for="omcontents[{{index}}][<%=field.key%>]"><?= t('<%=blockhandle%>.label.<%=field.key%>')?></label>
   <div class="controls">
-   {{#pageselector<%=field.key%>}}
-     {{{pageselector<%=field.key%>}}}
-   {{/pageselector<%=field.key%>}}
-
-   {{^pageselector<%=field.key%>}}
-     <?=$pageSelector->selectPage('omcontents[{{index}}][<%=field.key%>]', 0,'ccm_selectSitemapNode');?>
-   {{/pageselector<%=field.key%>}}
+    <?php
+    echo $pageSelector->selectPage('omcontents[{{index}}][<%=field.key%>]', $data['<%=field.key%>'],'ccm_selectSitemapNode');
+    ?>
   </div>
 </div>
