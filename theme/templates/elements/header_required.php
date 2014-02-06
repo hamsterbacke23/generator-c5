@@ -26,7 +26,7 @@ $pageTitle = htmlspecialchars($pageTitle, ENT_COMPAT, APP_CHARSET);
 if ($akt) {
   $pageTitle = $akt;
 }?>
-<title><?= sprintf(PAGE_TITLE_FORMAT, t('header.titelderseite'), $pageTitle)?></title>
+<title><?php echo  sprintf(PAGE_TITLE_FORMAT, t('header.titelderseite'), $pageTitle)?></title>
 <?php
   $u = new User();
 
@@ -81,15 +81,15 @@ if($favIconFID) {
 
 if($appleIconFID) {
   $f = File::getByID($appleIconFID); ?>
-  <link rel="apple-touch-icon" href="<?php  echo $f->getRelativePath()?>"  />
+  <link rel="apple-touch-icon" href="<?php echo $f->getRelativePath()?>"  />
 <?php  }
 
 if($modernIconFID) {
 	$f = File::getByID($modernIconFID);
-	?><meta name="msapplication-TileImage" content="<?php  echo $f->getRelativePath(); ?>" /><?php
+	?><meta name="msapplication-TileImage" content="<?php echo $f->getRelativePath(); ?>" /><?php
 	echo "\n";
 	if(strlen($modernIconBGColor)) {
-		?><meta name="msapplication-TileColor" content="<?php  echo $modernIconBGColor; ?>" /><?php
+		?><meta name="msapplication-TileColor" content="<?php echo $modernIconBGColor; ?>" /><?php
 		echo "\n";
 	}
 }

@@ -11,16 +11,16 @@ $u = new User();
 $bodyClasses .= ($u->isLoggedIn())?' isLoggedIn':'';
 
 ?><!doctype html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="<?=PAGE_LANG?>"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="<?=PAGE_LANG?>"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="<?=PAGE_LANG?>"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="<?=PAGE_LANG?>"> <!--<![endif]-->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="<?php echo PAGE_LANG?>"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="<?php echo PAGE_LANG?>"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="<?php echo PAGE_LANG?>"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="<?php echo PAGE_LANG?>"> <!--<![endif]-->
 <head>
 <meta charset="<?php  echo APP_CHARSET?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,700' rel='stylesheet' type='text/css'>
- <link rel="stylesheet" href="<?php  echo $this->getThemePath(); ?>/css/style.css">
+ <link rel="stylesheet" href="<?php echo $this->getThemePath(); ?>/css/style.css">
  <script src="<?php  echo $this->getThemePath(); ?>/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 
 <!-- === Header Required === -->
@@ -56,4 +56,4 @@ echo "<script> var SCREEN_RESOLUTIONS = [".$bpPrint."]; </script>";
 */?>
 
 </head>
-<body class="<?=$bodyClasses?>">
+<body class="<?php echo $bodyClasses?>">

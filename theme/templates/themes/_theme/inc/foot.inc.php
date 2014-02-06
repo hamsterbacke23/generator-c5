@@ -13,7 +13,7 @@
                         <li class="link-to-kontakt"><a href="/kontakt/">Kontakt</a></li>
                         <li class="link-to-impressum"><a href="/impressum/">Impressum</a></li>
                         <li class="link-to-login"><a href="/login_aussteller/">Login</a></li>
-                        <li class="link-to-merkliste"><a href="<?=$url?>">Merkliste (<span class="ffmlcount"><?=FFMLCOUNT?></span>)</a></li>
+                        <li class="link-to-merkliste"><a href="<?php echo $url?>">Merkliste (<span class="ffmlcount"><?php echo FFMLCOUNT?></span>)</a></li>
                     </ul>
                 </nav>
             </footer>

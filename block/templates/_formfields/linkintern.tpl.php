@@ -1,6 +1,6 @@
 <div class="control-group radio-group">
-  <label class="control-label" for="<%=field.key%>"><?= t('<%=blockhandle%>.label.<%=field.key%>')?></label>
+  <label class="control-label" for="<%=field.key%>"><?php echo  t('<%=blockhandle%>.label.<%=field.key%>')?></label>
   <div class="controls">
-     <?=$pageSelector->selectPage('<%=field.key%>', $<%=field.key%>,'ccm_selectSitemapNode');?>
+     <?php echo $pageSelector->selectPage('<%=field.key%>', $<%=field.key%>,'ccm_selectSitemapNode');?>
   </div>
 </div>

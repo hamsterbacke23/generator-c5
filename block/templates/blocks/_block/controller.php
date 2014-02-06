@@ -32,6 +32,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
     return t('<%=blockdesc.trim()%>');
   }
 
+  <% if(om){ %>
   public function getPkgHandle()
   {
     if(!isset($this->pkgHandle) || !$this->pkgHandle){
@@ -40,6 +41,8 @@ class <%=blockcchandle%>BlockController extends BlockController {
     }
     return $this->pkgHandle;
   }
+  <% } %>
+
 
   <% if(om || tiny){ %>
 
@@ -111,6 +114,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
   }
   <% } //tiny or datetime true %>
 
+  <% if(requiredFields){ %>
   public function validate($args) {
     $e = Loader::helper('validation/error');
 
@@ -136,6 +140,8 @@ class <%=blockcchandle%>BlockController extends BlockController {
     <% } %>
     return $e;
   }
+  <% } //requiredFields %>
+
 
   <% if(image){ %>
   private function buildImage($fID, $attrs = false)

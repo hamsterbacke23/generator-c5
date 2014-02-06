@@ -21,7 +21,7 @@ class <%=pkgcchandle+'Package'%> extends Package
 
   public function install()
   {
-    $this->checkDependencies();
+    <% if(dependencies) {%>$this->checkDependencies();<% } %>
     $pkg = parent::install();
     if(!empty($this->blockHandles)) {
       foreach ($this->blockHandles as $blockHandle) {
@@ -35,7 +35,7 @@ class <%=pkgcchandle+'Package'%> extends Package
 
   public function upgrade()
   {
-    $this->checkDependencies();
+    <% if(dependencies) {%>$this->checkDependencies();<% } %>
     parent::upgrade();
 
     Loader::model('block_types');
@@ -49,9 +49,9 @@ class <%=pkgcchandle+'Package'%> extends Package
         }
       }
     }
-
   }
 
+  <% if(dependencies) {%>
   public function checkDependencies()
   {
     $deps = array_filter($this->dependencies);
@@ -65,6 +65,7 @@ class <%=pkgcchandle+'Package'%> extends Package
         throw new Exception (t('Prerequisite package ' . implode(', ', $this->dependencies) . ' required'));
       }
     }
-
   }
+  <% } %>
+
 }

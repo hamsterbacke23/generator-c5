@@ -72,14 +72,16 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   var lang = grunt.option('lang') || 'de_DE';
+  var vt = grunt.option('vt') || 'minor';
+
   grunt.registerTask('langs', ['exec:createlangs:' + lang]);
   grunt.registerTask('cleanlines', ['trimtrailingspaces', 'regex-replace:lines:remove']);
-  grunt.registerTask('upgrade', ['version','exec:upgrade']);
-  grunt.registerTask('build', ['set_vtype:major', 'version','exec:upgrade','clean:build']);
+  grunt.registerTask('upgrade', ['set_vt:' + vt, 'version','exec:upgrade']);
+  grunt.registerTask('build', ['set_vt:' + vt, 'version','exec:upgrade','clean:build']);
   grunt.registerTask('install', ['exec:install']);
   grunt.registerTask('uninstall', ['exec:uninstall']);
-  grunt.registerTask('set_vtype', 'Set a config property.', function(val) {
-    grunt.config.set('version.options.type', val);
+  grunt.registerTask('set_vt', 'Set a config property.', function(vt) {
+    grunt.config.set('version.options.type', vt);
   });
 
 };

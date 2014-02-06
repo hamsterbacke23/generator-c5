@@ -1,5 +1,5 @@
 <div class="control-group radio-group">
-  <label class="control-label" for="<%=field.key%>"><?= t('<%=blockhandle%>.label.<%=field.key%>')?></label>
+  <label class="control-label" for="<%=field.key%>"><?php echo  t('<%=blockhandle%>.label.<%=field.key%>')?></label>
   <div class="controls">
     <?php
     $<%='fileobject'+field.key%> = $data['<%=field.key%>'] > 0 ? File::getByID($data['<%=field.key%>']) : 0;

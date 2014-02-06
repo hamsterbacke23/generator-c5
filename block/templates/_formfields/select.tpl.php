@@ -1,5 +1,5 @@
 <div class="control-group radio-group">
-  <?=$form->label('<%=field.key%>', t('<%=blockhandle%>.label.<%=field.key%>'))?>
+  <?php echo $form->label('<%=field.key%>', t('<%=blockhandle%>.label.<%=field.key%>'))?>
   <div class="controls">
     <?php
     echo $form->select('<%=field.key%>', array(

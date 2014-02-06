@@ -11,7 +11,7 @@ $pageSelector = Loader::helper('form/page_selector');
 $this->inc('formstyles.inc.css');
 ?>
 
-<template class="rowtpl"><?=$rowtpl?></template>
+<template class="rowtpl"><?php echo $rowtpl?></template>
 
 <section class="omcontents sortable-links">
 <?php
@@ -29,7 +29,7 @@ if(!empty($omcontents)) {
 }//endif ?>
 </section>
 
-<button class="addrow"><?=t('<%=blockhandle%>.button.addrow')?><img src="<?= ASSETS_URL_IMAGES ?>/icons/add.png" class="addicon" height="14" width="14"></button>
+<button class="addrow"><?php echo t('<%=blockhandle%>.button.addrow')?><img src="<?php echo  ASSETS_URL_IMAGES ?>/icons/add.png" class="addicon" height="14" width="14"></button>
 
 <div class="clearBoth"></div>
 

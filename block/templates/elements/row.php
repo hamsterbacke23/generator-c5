@@ -23,10 +23,10 @@ $form = Loader::helper('form');
 
   <div class="editactions">
     <a href="#" class="remove_handle ccm-sitemap-clear-selected-page">
-      <img src="<?= ASSETS_URL_IMAGES ?>/icons/remove.png"  />
+      <img src="<?php echo  ASSETS_URL_IMAGES ?>/icons/remove.png"  />
     </a>
     <a href="#" class="sort_handle">
-      <img src="<?= ASSETS_URL_IMAGES ?>/icons/up_down.png" class="sort_handle" height="14" width="14" style="cursor:move;">
+      <img src="<?php echo  ASSETS_URL_IMAGES ?>/icons/up_down.png" class="sort_handle" height="14" width="14" style="cursor:move;">
     </a>
   </div>
 

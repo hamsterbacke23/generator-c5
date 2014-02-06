@@ -28,15 +28,15 @@
                         <li class="link-to-kontakt"><a href="/kontakt/">Kontakt</a></li>
                         <li class="link-to-impressum"><a href="/impressum/">Impressum</a></li>
                         <li class="link-to-login"><a href="/login_aussteller/">Login</a></li>
-                        <li class="link-to-merkliste"><a href="<?=$url?>">Merkliste&nbsp;<span class="items-on-merkliste"><span>(</span><?='<em class="ffmlcount">'.FFMLCOUNT.'</em>'?><span>)</span></span></a></li>
+                        <li class="link-to-merkliste"><a href="<?php echo $url?>">Merkliste&nbsp;<span class="items-on-merkliste"><span>(</span><?php echo '<em class="ffmlcount">'.FFMLCOUNT.'</em>'?><span>)</span></span></a></li>
                     </ul>
                 </nav>
 
-                <form class="searchbox" role="search" action="<?=SEARCHURI?>">
+                <form class="searchbox" role="search" action="<?php echo SEARCHURI?>">
                 <fieldset>
                     <legend class="invisible">Suche</legend>
                     <label class="invisible">Suchbegriff</label>
-                    <input value="<?=htmlentities($_GET['query'], ENT_COMPAT, 'utf-8', false)?>" type="text" name="query" placeholder="Suchbegriff">
+                    <input value="<?php echo htmlentities($_GET['query'], ENT_COMPAT, 'utf-8', false)?>" type="text" name="query" placeholder="Suchbegriff">
                     <button type="submit" class="btn">suchen</button>
                 </fieldset>
                 </form>

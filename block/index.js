@@ -134,6 +134,7 @@ BlockGenerator.prototype.askFor = function askFor() {
     this.tinys       = [];
     this.checkboxes  = [];
     this.datetimes   = [];
+    this.requiredFields = false;
 
     this.om = props.pom;
 
@@ -171,10 +172,10 @@ BlockGenerator.prototype.askFor = function askFor() {
 
     //define handles and titles
     this.pkghandle = '';
-    this.basepath = '';
+    this.basepath = '.';
     if(props.pautopkg) {
       this.pkghandle = genUtils.getHandle(this, 'sb');
-      this.basepath   = 'packages/' + this.pkghandle + '/';
+      this.basepath   = 'packages/' + this.pkghandle;
     }
 
     console.log('-----\r\n ... bib bib bibi biiib bib ... \r\n-----');
@@ -240,6 +241,11 @@ BlockGenerator.prototype.processSingleFields = function processSingleFields(str)
     reqParts = sf.split('__');
     sfResult.required = reqParts.length > 0 && reqParts[1] == 'r';
     fieldParts = sfResult.required ? reqParts[0].split(':') : sf.split(':');
+
+    //set required flag
+    if(sfResult.required){
+      this.requiredFields = true;
+    }
 
     if(fieldParts.length > 1
       && typeof this.availFieldTypes[fieldParts[0]] != 'undefined')
@@ -407,8 +413,8 @@ BlockGenerator.prototype.processFields = function processFields() {
 BlockGenerator.prototype.files = function files() {
 
   //define paths
-  this.blockpath = this.basepath + 'blocks/' + this.blockhandle + '/';
-  this.blockrelpath = 'blocks/' + this.blockhandle + '/';
+  this.blockpath = this.basepath + '/blocks/' + this.blockhandle + '/';
+  // this.blockrelpath = 'blocks/' + this.blockhandle + '/';
 
   //do basic files
   this.template(this.blocktplpath + 'view.php', this.blockpath + 'view.php');
