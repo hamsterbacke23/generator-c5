@@ -49,10 +49,17 @@ $(function() {
   if(typeof Mustache == 'undefined') {
     console.log('Mustache is undefined!');
   }
+
   function addRow() {
     var index = $(rowContainerSelector).length;
     var output = mtpl({heading: newRowTitle, index: index});
     $omcontents.append(output);
+    <% if(tiny){ %>
+    var tinyConfig = <%=blockcchandle.toUpperCase() + '_TINYCONFIG'%>; //see elements/editor_config.php
+    tinyConfig.editor_selector = 'ccm-advanced-editor' + index;
+    tinyMCE.init(tinyConfig);
+    <% }//endif %>
+
     updateRemoveHandles();
   }
 

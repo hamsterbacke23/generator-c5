@@ -75,6 +75,7 @@ PackageGenerator.prototype.askFor = function askFor() {
   this.prompt(prompts, function (props) {
     this.pkgdesc      = props.pdesc;
     this.installpkg   = props.pkginstall;
+    this.pkgcli       = props.pkgcli;
     this.cblock       = props.cblock;
     this.pkgversion   = '0.0.1';
     this.blockhandle  = typeof this.options.blockhandle == 'undefined' ? '' : this.options.blockhandle;
@@ -96,14 +97,22 @@ PackageGenerator.prototype.askFor = function askFor() {
 
 PackageGenerator.prototype.projectfiles = function projectfiles() {
   this.template(this.pkgtplpath + '_controller.php', this.basepath + 'controller.php');
-  this.copy(this.pkgtplpath + '_cli/_install_cli.php', this.basepath + 'cli/install_cli.php');
-  this.copy(this.pkgtplpath + '_cli/_uninstall_cli.php', this.basepath + 'cli/uninstall_cli.php');
-  this.copy(this.pkgtplpath + '_cli/_upgrade_cli.php', this.basepath + 'cli/upgrade_cli.php');
-  this.copy(this.pkgtplpath + '_index_cli.php', this.basepath + 'index_cli.php');
+
+  if(this.pkgcli) {
+    this.copy(this.pkgtplpath + '_cli/_install_cli.php', this.basepath + 'cli/install_cli.php');
+    this.copy(this.pkgtplpath + '_cli/_uninstall_cli.php', this.basepath + 'cli/uninstall_cli.php');
+    this.copy(this.pkgtplpath + '_cli/_upgrade_cli.php', this.basepath + 'cli/upgrade_cli.php');
+    this.copy(this.pkgtplpath + '_index_cli.php', this.basepath + 'index_cli.php');
+  }
+
+  if(this.installpkg) {
+    this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
+    this.template(this.pkgtplpath + '_package.json', this.basepath + 'package.json');
+    this.template(this.pkgtplpath + '_composer.json', this.basepath + 'composer.json');
+    this.template(this.pkgtplpath + '_readme.md', this.basepath + 'readme.md');
+  }
+
   this.copy(this.pkgtplpath + 'icon.png', this.basepath + 'icon.png');
-  this.directory(this.pkgtplpath + 'languages', this.basepath + 'languages');
-  this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
-  this.template(this.pkgtplpath + '_package.json', this.basepath + 'package.json');
-  this.template(this.pkgtplpath + '_readme.md', this.basepath + 'readme.md');
+  this.directory(this.pkgtplpath + '_languages', this.basepath + 'languages');
 };
 

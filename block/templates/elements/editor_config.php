@@ -15,8 +15,7 @@ if (isset($editor_width)) {
 }
 ?>
 <script language="javascript">
-$(function(){
-  tinyMCE.init({
+var <%=blockcchandle.toUpperCase() + '_TINYCONFIG'%> = {
     language : 'de',
     mode : "textareas",
     width: "100%",
@@ -50,6 +49,8 @@ $(function(){
             ed.pasteAsPlainText = true;
         });
     }
-  });
+  }
+$(function(){
+  tinyMCE.init(<%=blockcchandle.toUpperCase() + '_TINYCONFIG'%>);
 });
 </script>

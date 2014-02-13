@@ -35,7 +35,7 @@ module.exports = function (grunt) {
       }
     },
     clean: {
-      build: ['index_cli.php', 'cli', 'package.json', 'Gruntfile.js', 'readme.md', 'node_modules']
+      build: ['index_cli.php', 'cli', 'package.json', 'Gruntfile.js', 'readme.md', 'node_modules', 'composer.json', 'cs']
     },
     'regex-replace': {
       lines: { //specify a target with any name
@@ -59,6 +59,24 @@ module.exports = function (grunt) {
           failIfTrimmed: false
         }
       }
+    },
+    phpcs: {
+      application: {
+        dir: ['**/*.php']
+      },
+      options: {
+        bin: 'vendor/bin/phpcs',
+        standard: 'Zend'
+      }
+    },
+    watch: {
+      scripts: {
+        files: ['**/*.php'],
+        tasks: ['phpcs'],
+        options: {
+          spawn: false,
+        },
+      },
     }
 
 
@@ -70,9 +88,11 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-version');
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-phpcs');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   var lang = grunt.option('lang') || 'de_DE';
-  var vt = grunt.option('vt') || 'minor';
+  var vt = grunt.option('vt') || 'patch';
 
   grunt.registerTask('langs', ['exec:createlangs:' + lang]);
   grunt.registerTask('cleanlines', ['trimtrailingspaces', 'regex-replace:lines:remove']);

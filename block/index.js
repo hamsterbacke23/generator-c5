@@ -45,6 +45,8 @@ BlockGenerator.prototype.askFor = function askFor() {
 
   this.availFieldTypes = avFields.getFields()['normal'];
 
+  var self = this;
+
   var prompts = [
   {
     when: function(response) {
@@ -84,7 +86,7 @@ BlockGenerator.prototype.askFor = function askFor() {
             omFieldMessage + '\r\n' +
             'Row fields: ',
     validate: function(input){
-      var nameok = validateForbiddenFields(input);
+      var nameok = validateForbiddenFields(input, self);
       return input.length > 0
           && input.indexOf('|') < 0
           && nameok;
@@ -99,20 +101,36 @@ BlockGenerator.prototype.askFor = function askFor() {
              'Fields: ',
 
     validate: function(input){
-      var nameok = validateForbiddenFields(input);
+      var nameok = validateForbiddenFields(input, self);
       return input.length > 0 && nameok;
   }
   }];
 
 
-  var validateForbiddenFields = function(input) {
-    var forbiddenFields = ['blob', 'file'];
-    for (var i = 0; i < forbiddenFields.length; i++) {
-      if(input.indexOf(forbiddenFields[i] + ':') > -1
-          || input.indexOf(':' + forbiddenFields[i]) > -1) {
+  var validateForbiddenFields = function(input, self) {
+    var forbiddenFields = avFields.getForbiddenFields();
+
+    var fields = input.split(',');
+
+    //loop through everything and validate
+    for (var i = 0; i < fields.length; i++) {
+      var fparts = fields[i].split(':');
+      if(fparts.length != 2) {
+        continue;
+      }
+
+      var fparts1 = fparts[0].toUpperCase();
+      var fparts2 = fparts[1].toUpperCase();
+
+      var match1 = self._.contains(forbiddenFields,fparts1 );
+      var match2 = self._.contains(forbiddenFields, fparts2);
+
+      if(match1 || match2) {
+        console.log('Forbidden mysql key!');
         return false;
       }
     };
+
     return true;
   }
 

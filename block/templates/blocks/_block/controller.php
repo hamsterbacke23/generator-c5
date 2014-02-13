@@ -32,7 +32,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
     return t('<%=blockdesc.trim()%>');
   }
 
-  <% if(om){ %>
+  <% if(om || tiny){ %>
   public function getPkgHandle()
   {
     if(!isset($this->pkgHandle) || !$this->pkgHandle){
@@ -43,24 +43,16 @@ class <%=blockcchandle%>BlockController extends BlockController {
   }
   <% } %>
 
-
-  <% if(om || tiny){ %>
-
+  <% if(om){ %>
   public function edit() {
     <% if(om){ %>
     $this->setOmForm();
-    <% } %>
-    <% if(tiny){ %>
-    $this->setupTinys();
     <% } %>
   }
 
   public function add() {
     <% if(om){ %>
     $this->setOmForm();
-    <% } %>
-    <% if(tiny){ %>
-    $this->setupTinys();
     <% } %>
   }
   <% } %>
@@ -81,30 +73,37 @@ class <%=blockcchandle%>BlockController extends BlockController {
 
 
   <% if(tiny || datetime){ %>
-  <% if(tiny){ %>
-  private function setupTinys()
-  {
-    <% _.each(_.uniq(tinys), function(tinykey) { %>
-    $this-><%=blockhandle%><%=tinykey%>Tiny = new <%=blockhandle%>Tiny($this-><%=tinykey%>);
-    <% }); %>
-  }
-  <% } //tiny true %>
-
   public function save($args)
   {
-    <% if(tiny){ %>
-    $tiny = new <%=blockhandle%>Tiny();
-    <% _.each(_.uniq(tinys), function(tinykeyb) { %>
-    $<%=tinykeyb%> = $tiny->translateTo($args['<%=tinykeyb%>']);
-    $args['<%=tinykeyb%>'] = $<%=tinykeyb%>;
-    <% }); %>
     <% _.each(_.uniq(checkboxes), function(cbkey) { %>
     $args['<%=cbkey%>'] = isset($args['<%=cbkey%>']) && $args['<%=cbkey%>'] == 'on' ? 1 : 0;
     <% }); %>
+
+    <% if(tiny){ %>
+    $tiny = new <%=blockhandle%>Tiny();
+    <% _.each(_.uniq(tinys), function(tinykeyb) { %>
+    if(isset($args['<%=tinykeyb%>'])) {
+      $<%=tinykeyb%> = $tiny->translateTo($args['<%=tinykeyb%>']);
+      $args['<%=tinykeyb%>'] = $<%=tinykeyb%>; //normal c5 translate
+    }
+    <% }); %>
+
+    <% if(om){ %>
+    $i = 0;
+    foreach ($args[$this->omKey] as $item) {
+    <% _.each(_.uniq(tinys), function(tinykeyb) { %>
+    if(isset($args[$this->omKey][$i]['<%=tinykeyb%>'])) {
+      $args[$this->omKey][$i]['<%=tinykeyb%>'] = $tiny->translateTo($item['<%=tinykeyb%>']); //row tiny c5 translate
+    }
+    <% }); %>
+     $i++;
+    }
+    <% } //om true %>
+
     <% } //tiny true %>
 
     <% if(datetime){ %>
-    $dtt = Loader::helper('form/sb_date_time', 'sb_fachforen');
+    $dtt = Loader::helper('form/date_time');
     <% _.each(_.uniq(datetimes), function(datetimekey) { %>
     $args['<%=datetimekey%>'] = $dtt->translate('<%=datetimekey%>');
     <% }); %>
@@ -210,10 +209,6 @@ class <%=blockcchandle%>BlockController extends BlockController {
       'active'          => $linkInfo->isActive(),
       'errorMsg'        => $linkInfo->getLinkError(),
       'displayLinkText' => $linkInfo->getPageTitle(),
-      // 'fensterHinweis'  => $this->target,
-      // 'displayTitleTag' => $this->title,
-      // 'position'        => $this->position,
-      // 'style'           => $this->style,
       'linkType'        => 'intern',
       'class'           => 'btn'
     );
