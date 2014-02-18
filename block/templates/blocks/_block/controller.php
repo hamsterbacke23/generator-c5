@@ -1,14 +1,14 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
-<% if(tiny ) { %>
-require_once('tiny_controller.php');
-<% } %>
+<% if(tiny ) { %>require_once('tiny_controller.php');<% } %>
+
 <% if(om){ %>
 require_once('om_controller.php');
 class <%=blockcchandle%>BlockController extends <%=blockcchandle%>OneToManyController {
 <% } else { %>
 class <%=blockcchandle%>BlockController extends BlockController {
 <% } %>
+
   protected $btTable                              = 'bt<%=blockcchandle%>';
   protected $btInterfaceWidth                     = "450";
   protected $btInterfaceHeight                    = "450";
@@ -45,15 +45,11 @@ class <%=blockcchandle%>BlockController extends BlockController {
 
   <% if(om){ %>
   public function edit() {
-    <% if(om){ %>
     $this->setOmForm();
-    <% } %>
   }
 
   public function add() {
-    <% if(om){ %>
     $this->setOmForm();
-    <% } %>
   }
   <% } %>
 

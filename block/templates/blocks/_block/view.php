@@ -7,6 +7,7 @@
 <% }else if(field.type == 'tiny') { %>
 
 <?php
+//// <%=field.type%> <%=field.key%> ////
 if($<%=field.key%>) {
   echo $<%=field.key%>;
 }//endif
@@ -15,6 +16,7 @@ if($<%=field.key%>) {
 <%} else {%>
 
 <?php
+//// <%=field.type%> <%=field.key%> ////
 if($<%=field.key%>) {
   echo htmlspecialchars($<%=field.key%>, ENT_QUOTES, 'utf-8', false);
 }//endif
@@ -37,6 +39,7 @@ if($<%=field.key%>) {
     <% } else if(field.type == 'tiny') { %>
 
     <?php
+    //// <%=field.type%> <%=field.key%> ////
     if($<%=field.key%>) {
       echo $<%=field.key%>;
     }//endif
@@ -45,6 +48,7 @@ if($<%=field.key%>) {
     <%} else {%>
 
     <?php
+    //// <%=field.type%> <%=field.key%> ////
     if($<%=field.key%>) {
       echo htmlspecialchars($<%=field.key%>, ENT_QUOTES, 'utf-8', false);
     }//endif

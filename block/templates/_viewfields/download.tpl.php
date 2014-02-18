@@ -1,4 +1,6 @@
 <?php
+//// <%=field.type%> <%=field.key%> ////
+
 if($<%=field.key%>) {
 $fileData = $this->controller->getFileData($<%=field.key%>);
 extract($fileData);

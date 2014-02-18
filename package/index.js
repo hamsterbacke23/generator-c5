@@ -9,7 +9,11 @@ var PackageGenerator = module.exports = function PackageGenerator(args, options,
   yeoman.generators.Base.apply(this, arguments);
 
   this.argument('name', { type: String, required: false });
+  // this.argument('configExtern', { required: false });
+
+
   this.option('themehandle', { type: String, required: false, defaults: '' });
+  this.option('configExtern', { type: Object, required: false});
 
   this.on('end', function () {
     if(this.installpkg) {
@@ -51,7 +55,7 @@ PackageGenerator.prototype.askFor = function askFor() {
         return input.length > 0;
       }
     },{
-      name: 'pdesc',
+      name: 'pkgdesc',
       message: 'Package description: ',
       default: defaultPkgDesc,
       validate: function(input){
@@ -72,27 +76,37 @@ PackageGenerator.prototype.askFor = function askFor() {
       default: true
     }];
 
-  this.prompt(prompts, function (props) {
-    this.pkgdesc      = props.pdesc;
-    this.installpkg   = props.pkginstall;
-    this.pkgcli       = props.pkgcli;
-    this.cblock       = props.cblock;
-    this.pkgversion   = '0.0.1';
-    this.blockhandle  = typeof this.options.blockhandle == 'undefined' ? '' : this.options.blockhandle;
-    this.dependencies = typeof this.options.dependencies == 'undefined' ? '' : this.options.dependencies;
-    this.name         = askTitle ? props.ppkgname : this.name;
-    this.themehandle  = this.options.themehandle;
+    if(this.options.configExtern) {
+      prompts = [];
+    }
 
-    //define handles and titles
-    this.pkghandle   = genUtils.getHandle(this);
-    this.basepath     = 'packages/' + this.pkghandle + '/';
-    this.pkgcchandle = this._.classify(this.pkghandle).trim();
+    this.prompt(prompts, function (props) {
+      if(this.options.configExtern) {
+        this._.extend(props, this.options.configExtern);
+      }
+      this.pkgdesc      = props.pkgdesc.trim();
+      this.installpkg   = props.pkginstall;
+      this.pkgcli       = props.pkgcli;
+      this.name         = askTitle ? props.ppkgname : this.name;
+      this.setConfig();
+      cb();
+    }.bind(this));
 
-    cb();
-  }.bind(this));
-
-  this.pkgtplpath   = '';
 };
+
+
+PackageGenerator.prototype.setConfig = function setConfig() {
+  this.pkgtplpath   = '';
+  this.pkgversion   = '0.0.1';
+  this.blockhandle  = typeof this.options.blockhandle == 'undefined' ? '' : this.options.blockhandle;
+  this.dependencies = typeof this.options.dependencies == 'undefined' ? '' : this.options.dependencies;
+  this.themehandle  = this.options.themehandle;
+
+  //define handles and titles
+  this.pkghandle   = genUtils.getHandle(this);
+  this.basepath     = 'packages/' + this.pkghandle + '/';
+  this.pkgcchandle = this._.classify(this.pkghandle).trim();
+}
 
 
 PackageGenerator.prototype.projectfiles = function projectfiles() {

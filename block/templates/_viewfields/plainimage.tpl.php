@@ -1,4 +1,5 @@
 <?php
+//// <%=field.type%> <%=field.key%> ////
 if($<%=field.key%>) {
 $imgWidth = 640;
 $imgHeight = 480;

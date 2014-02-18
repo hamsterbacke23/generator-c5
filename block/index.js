@@ -9,6 +9,13 @@ var BlockGenerator = module.exports = function BlockGenerator(args, options, con
   yeoman.generators.Base.apply(this, arguments);
 
   this.argument('name', { type: String, required: false });
+  this.argument('configFile', { type: String, required: false });
+
+  this.configExtern = false;
+  if(typeof this.configFile != 'undefined') {
+    this.configExtern = JSON.parse(this.readFileAsString(this.configFile));
+  }
+  console.log('waaaaa' + this.configExtern);
 
   this.on('end', function () {
     if (this.autopkg) {
@@ -18,7 +25,8 @@ var BlockGenerator = module.exports = function BlockGenerator(args, options, con
           'pkgdesc' : this.blockdesc + ' Package',
           'blockhandle' : this.blockhandle,
           'dependencies' : this.dependencies,
-          'nested' : true
+          'nested' : true,
+          'configExtern' : this.configExtern
         }
       });
     }
@@ -134,76 +142,88 @@ BlockGenerator.prototype.askFor = function askFor() {
     return true;
   }
 
+  if(this.configExtern) {
+    prompts = [];
+  }
+
   this.prompt(prompts, function (props) {
+    if(this.configExtern) {
+      this._.extend(props,this.configExtern);
+    }
     this.pfields    = props.pfields;
     this.pomfields  = props.pomfields;
-    this.pom        = props.pom;
+    this.om         = props.pom;
     this.ptabfields = props.ptabfields;
     this.blockdesc  = props.pblockdesc;
     this.autopkg    = props.pautopkg;
-    this.name = askTitle ? props.pblockname : this.name;
+    this.name       = askTitle ? props.pblockname : this.name;
 
     this.tabs = props.pfields.split('|').length > 1;
 
-    this.images      = [];
-    this.plainimages = [];
-    this.downloads   = [];
-    this.inlinks     = [];
-    this.tinys       = [];
-    this.checkboxes  = [];
-    this.datetimes   = [];
-    this.requiredFields = false;
-
-    this.om = props.pom;
-
-    this.pkgversion = '0.0.1';
-
-    this.blockhandle   = this._.underscored(
-      this._.slugify(this.name).trim()
-    );
-    this.blockcchandle = this._.classify(this.blockhandle).trim();
-
-    //read fields
-    this.allFields = this.processFields(); //bug: why is processfields called twice?
-    this.fields = this.allFields.fields;
-    this.fieldstpl = this.buildTpl(this.fields);
-
-    if(this.om) {
-      this.omfields = this.allFields.omfields;
-      this.omfieldstpl = this.buildTpl(this.omfields)
-    }
-    if(this.tabs) {
-      this.tabfields = this.allFields.tabfields;
-    }
-
-    this.hasform         = true; //for now always create form blocks
-    this.fileselector    = this.downloads.length > 0 || this.images.length > 0 || this.plainimages.length > 0;
-    this.linkintern      = this.inlinks.length > 0;
-    this.tiny            = this.tinys.length > 0;
-    this.image           = this.images.length > 0 || this.plainimages.length > 0;
-    this.responsiveimage = this.images.length > 0;
-    this.plainimage      = this.plainimages.length > 0;
-    this.download        = this.downloads.length > 0;
-    this.datetime        = this.datetimes.length > 0;
-
-    this.checkDependencies();
-
-    //define handles and titles
-    this.pkghandle = '';
-    this.basepath = '.';
-    if(props.pautopkg) {
-      this.pkghandle = genUtils.getHandle(this, 'sb');
-      this.basepath   = 'packages/' + this.pkghandle;
-    }
-
-    console.log('-----\r\n ... bib bib bibi biiib bib ... \r\n-----');
+    this.setConfig();
     cb();
   }.bind(this));
+};
 
+BlockGenerator.prototype.setConfig = function setConfig() {
+  //paths
   this.formtplpath  = '_formfields/';
   this.viewtplpath  = '_viewfields/';
   this.blocktplpath = 'blocks/_block/';
-};
+
+  //init vars
+  this.images      = [];
+  this.plainimages = [];
+  this.downloads   = [];
+  this.inlinks     = [];
+  this.tinys       = [];
+  this.checkboxes  = [];
+  this.datetimes   = [];
+  this.requiredFields = false;
+
+  this.pkgversion = '0.0.1';
+
+  //do stuff
+  this.blockhandle   = this._.underscored(
+    this._.slugify(this.name).trim()
+  );
+  this.blockcchandle = this._.classify(this.blockhandle).trim();
+
+  //read fields
+  this.allFields = this.processFields(); //bug: why is processfields called twice?
+  this.fields = this.allFields.fields;
+  this.fieldstpl = this.buildTpl(this.fields);
+
+  if(this.om) {
+    this.omfields = this.allFields.omfields;
+    this.omfieldstpl = this.buildTpl(this.omfields)
+  }
+  if(this.tabs) {
+    this.tabfields = this.allFields.tabfields;
+  }
+
+  this.hasform         = true; //for now always create form blocks
+  this.fileselector    = this.downloads.length > 0 || this.images.length > 0 || this.plainimages.length > 0;
+  this.linkintern      = this.inlinks.length > 0;
+  this.tiny            = this.tinys.length > 0;
+  this.image           = this.images.length > 0 || this.plainimages.length > 0;
+  this.responsiveimage = this.images.length > 0;
+  this.plainimage      = this.plainimages.length > 0;
+  this.download        = this.downloads.length > 0;
+  this.datetime        = this.datetimes.length > 0;
+
+  this.checkDependencies();
+
+  //define handles and titles
+  this.pkghandle = '';
+  this.basepath = '.';
+  if(this.autopkg) {
+    this.pkghandle = genUtils.getHandle(this, 'sb');
+    this.basepath   = 'packages/' + this.pkghandle;
+  }
+
+  console.log('-----\r\n ... bib bib bibi biiib bib ... \r\n-----');
+}
 
 
 BlockGenerator.prototype.checkDependencies = function checkDependencies() {
@@ -418,7 +438,7 @@ BlockGenerator.prototype.processFields = function processFields() {
       result.fields = this._.flatten(resultTabs);
     }
   }
-  if(this.pom) {
+  if(this.om) {
     result.omfields = this.processSingleFields(this.pomfields);
   }
   if(this.pfields.length > 0 && !this.tabs) {
