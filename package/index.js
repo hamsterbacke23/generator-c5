@@ -9,22 +9,25 @@ var PackageGenerator = module.exports = function PackageGenerator(args, options,
   yeoman.generators.Base.apply(this, arguments);
 
   this.argument('name', { type: String, required: false });
-  // this.argument('configExtern', { required: false });
-
 
   this.option('themehandle', { type: String, required: false, defaults: '' });
   this.option('configExtern', { type: Object, required: false});
 
   this.on('end', function () {
-    if(this.installpkg) {
+    if(this.installpkg || this.pkgcli) {
       process.chdir(this.basepath);
       this.installDependencies({
         skipInstall: options['skip-install'],
         callback: function() {
-          this.spawnCommand('grunt', ['install', 'cleanlines','langs']);
+          var cmds = ['cleanlines', 'langs'];
+          if(this.installpkg) {
+            cmds.push('install');
+          }
+          this.spawnCommand('grunt', cmds);
         }.bind(this)
       });
     }
+
   });
 };
 
@@ -64,7 +67,7 @@ PackageGenerator.prototype.askFor = function askFor() {
     },{
       name: 'pkgcli',
       type: 'confirm',
-      message: 'Include command line interface?',
+      message: 'Include command line interface and Grunt?',
       default: true
     },{
       when: function(response) {
@@ -72,7 +75,7 @@ PackageGenerator.prototype.askFor = function askFor() {
       },
       name: 'pkginstall',
       type: 'confirm',
-      message: 'Install Grunt Tasks and try installing the package in concrete5?',
+      message: 'Try installing the package in concrete5?',
       default: true
     }];
 
@@ -117,9 +120,6 @@ PackageGenerator.prototype.projectfiles = function projectfiles() {
     this.copy(this.pkgtplpath + '_cli/_uninstall_cli.php', this.basepath + 'cli/uninstall_cli.php');
     this.copy(this.pkgtplpath + '_cli/_upgrade_cli.php', this.basepath + 'cli/upgrade_cli.php');
     this.copy(this.pkgtplpath + '_index_cli.php', this.basepath + 'index_cli.php');
-  }
-
-  if(this.installpkg) {
     this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
     this.template(this.pkgtplpath + '_package.json', this.basepath + 'package.json');
     this.template(this.pkgtplpath + '_composer.json', this.basepath + 'composer.json');

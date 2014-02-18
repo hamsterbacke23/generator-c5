@@ -9,6 +9,50 @@ Three block form layouts are supported
 
 It depends on external modules for images, texteditor and link checking, which have to be provided.
 
+## Sublime Integration Example
+generator-c5.json (or other filename):
+```
+{
+  "cmd": ["grunt", "version"],
+  "shell" : "true",
+  "variants": [
+
+      { "cmd": ["grunt", "build"],
+        "name": "Concrete5 package: Get rid of grunt and cli stuff",
+        "shell": true
+      },
+
+      { "cmd": ["yo", "c5:block", "test", "$file", "--force"],
+        "name": "Create new concrete5 block",
+        "working_dir" : "$file_path",
+        "shell": true
+      }
+  ],
+  "encoding": "latin1"
+}
+```
+Sublime Build Example:
+```
+{
+  "cmd": ["grunt", "version"],
+  "shell" : "true",
+  "variants": [
+
+      { "cmd": ["grunt", "build"],
+        "name": "Concrete5 package: Get rid of grunt and cli stuff",
+        "shell": true
+      },
+
+      { "cmd": ["yo", "c5:block", "test", "$file", "--force"],
+        "name": "Create new concrete5 block",
+        "working_dir" : "$file_path",
+        "shell": true
+      }
+  ],
+  "encoding": "latin1"
+}
+```
+
 ## Getting Started
 
 ### What is Yeoman?

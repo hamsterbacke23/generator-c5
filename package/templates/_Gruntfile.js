@@ -43,7 +43,7 @@ module.exports = function (grunt) {
         actions: [
           {
             name: 'remove',
-            search: '(\s*\n){2,}',
+            search: '(\s*\\n){2,}',
             replace: '\n\n',
             flags: 'g'
           }

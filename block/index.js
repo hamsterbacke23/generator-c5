@@ -15,7 +15,6 @@ var BlockGenerator = module.exports = function BlockGenerator(args, options, con
   if(typeof this.configFile != 'undefined') {
     this.configExtern = JSON.parse(this.readFileAsString(this.configFile));
   }
-  console.log('waaaaa' + this.configExtern);
 
   this.on('end', function () {
     if (this.autopkg) {
@@ -156,7 +155,7 @@ BlockGenerator.prototype.askFor = function askFor() {
     this.ptabfields = props.ptabfields;
     this.blockdesc  = props.pblockdesc;
     this.autopkg    = props.pautopkg;
-    this.name       = askTitle ? props.pblockname : this.name;
+    this.name       = askTitle || this.configExtern ? props.pblockname : this.name;
 
     this.tabs = props.pfields.split('|').length > 1;
 
