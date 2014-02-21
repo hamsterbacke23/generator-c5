@@ -1,6 +1,6 @@
 {
   "name": "generator-c5",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "A generator for Yeoman, generates concrete5 blocks, packages etc.",
   "keywords": [
     "yeoman-generator",
@@ -28,7 +28,7 @@
     "mocha": "~1.14.0",
     "grunt": "0.4.x",
     "grunt-cli": "0.1.13",
-    "grunt-contrib-jshint" : "0.x.x"
+    "grunt-contrib-jshint": "0.x.x"
   },
   "peerDependencies": {
     "yo": ">=1.0.0"
