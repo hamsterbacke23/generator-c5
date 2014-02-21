@@ -71,7 +71,7 @@ PackageGenerator.prototype.askFor = function askFor() {
       default: true
     },{
       when: function(response) {
-        return response.pkgcli == true;
+        return response.pkgcli === true;
       },
       name: 'pkginstall',
       type: 'confirm',
@@ -109,7 +109,7 @@ PackageGenerator.prototype.setConfig = function setConfig() {
   this.pkghandle   = genUtils.getHandle(this);
   this.basepath     = 'packages/' + this.pkghandle + '/';
   this.pkgcchandle = this._.classify(this.pkghandle).trim();
-}
+};
 
 
 PackageGenerator.prototype.projectfiles = function projectfiles() {

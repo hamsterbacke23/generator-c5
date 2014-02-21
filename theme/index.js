@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
@@ -93,7 +93,7 @@ ThemeGenerator.prototype.askFor = function askFor() {
     default: true
   },{
     when: function(response) {
-      return response.donpm == true;
+      return response.donpm === true;
     },
     type: 'list',
     name: 'prepros',

@@ -18,8 +18,9 @@ var BlockGenerator = module.exports = function BlockGenerator(args, options, con
 
   this.on('end', function () {
     if (this.autopkg) {
+      var forceArg = this.configExtern ? ' --force' : '';
       this.invoke('c5:package', {
-        args: this.pkghandle,
+        args: this.pkghandle + forceArg,
         options: {
           'pkgdesc' : this.blockdesc + ' Package',
           'blockhandle' : this.blockhandle,
@@ -147,28 +148,49 @@ BlockGenerator.prototype.askFor = function askFor() {
 
   this.prompt(prompts, function (props) {
     if(this.configExtern) {
-      this._.extend(props,this.configExtern);
+      this._.extend(props, this.configExtern);
     }
-    this.pfields    = props.pfields;
-    this.pomfields  = props.pomfields;
-    this.om         = props.pom;
-    this.ptabfields = props.ptabfields;
-    this.blockdesc  = props.pblockdesc;
-    this.autopkg    = props.pautopkg;
+    this.pfields        = props.pfields;
+    this.pomfields      = props.pomfields;
+    this.ptabfields     = props.ptabfields;
+    this.blockdesc      = props.pblockdesc;
+    this.autopkg        = props.pautopkg;
+
     this.name       = askTitle || this.configExtern ? props.pblockname : this.name;
+    this.tabs = false;
+    if(!this.configExtern){
+      this.tabs = props.pfields.split('|').length > 1;
+    } else {
+      this.tabs = typeof this.configExtern.fieldproperties.tabfields != 'undefined'
+        && this.configExtern.fieldproperties.tabfields.length > 0;
+    }
+    if(!this.configExtern){
+      this.om = props.pom;
+    } else {
+      this.om = typeof this.configExtern.fieldproperties.omfields != 'undefined'
+        && this.configExtern.fieldproperties.omfields.length > 0;
+    }
 
-    this.tabs = props.pfields.split('|').length > 1;
-
-    this.setConfig();
+    this.setup();
     cb();
   }.bind(this));
+
+
 };
 
-BlockGenerator.prototype.setConfig = function setConfig() {
+BlockGenerator.prototype.setup = function setup() {
   //paths
   this.formtplpath  = '_formfields/';
   this.viewtplpath  = '_viewfields/';
   this.blocktplpath = 'blocks/_block/';
+
+  //define handles and titles
+  this.pkghandle = '';
+  this.basepath = '.';
+  if(this.autopkg) {
+    this.pkghandle = genUtils.getHandle(this, 'sb');
+    this.basepath   = 'packages/' + this.pkghandle;
+  }
 
   //init vars
   this.images      = [];
@@ -189,9 +211,13 @@ BlockGenerator.prototype.setConfig = function setConfig() {
   this.blockcchandle = this._.classify(this.blockhandle).trim();
 
   //read fields
-  this.allFields = this.processFields(); //bug: why is processfields called twice?
-  this.fields = this.allFields.fields;
-  this.fieldstpl = this.buildTpl(this.fields);
+  var fieldprops = this.configExtern
+    ? this._.cloneDeep(this.configExtern.fieldproperties)
+    : this.getFieldProps();
+  this.exportInfo     = this._.cloneDeep(fieldprops);
+  this.requiredFields = this.checkRequired(fieldprops);
+  this.allFields      = this.renderFields(fieldprops);
+
 
   if(this.om) {
     this.omfields = this.allFields.omfields;
@@ -199,7 +225,12 @@ BlockGenerator.prototype.setConfig = function setConfig() {
   }
   if(this.tabs) {
     this.tabfields = this.allFields.tabfields;
+    this.fields = this._.flatten(this.allFields.tabfields);
+  } else {
+    this.fields = this.allFields.fields;
   }
+
+  this.fieldstpl      = this.buildTpl(this.fields);
 
   this.hasform         = true; //for now always create form blocks
   this.fileselector    = this.downloads.length > 0 || this.images.length > 0 || this.plainimages.length > 0;
@@ -213,17 +244,68 @@ BlockGenerator.prototype.setConfig = function setConfig() {
 
   this.checkDependencies();
 
-  //define handles and titles
-  this.pkghandle = '';
-  this.basepath = '.';
-  if(this.autopkg) {
-    this.pkghandle = genUtils.getHandle(this, 'sb');
-    this.basepath   = 'packages/' + this.pkghandle;
-  }
-
   console.log('-----\r\n ... bib bib bibi biiib bib ... \r\n-----');
 }
 
+
+/**
+ * Only Checks if there are any required fields
+ * @param  {object} fieldprops field properties
+ * @return {boolean}
+ */
+BlockGenerator.prototype.checkRequired = function checkRequired(fieldprops) {
+
+  console.log(fieldprops);
+
+  var checkRequired = function(field)
+  {
+    if(typeof field.required != 'undefined' && field.required == true){
+      return true;
+    }
+    return false;
+  }
+
+  var match = this._.find(fieldprops, function(fields){
+    for (var i = 0; i < fields.length; i++) {
+      if(typeof fields[i] instanceof Array) {
+        for (var j = 0; j < fields[i].length; j++) {
+          if(checkRequired(fields[i][j]) == true){
+            return true;
+            break;
+          }
+        };
+      } else {
+        if(checkRequired(fields[i]) == true){
+          return true;
+          break;
+        }
+      }
+    };
+  });
+
+  return match;
+}
+
+BlockGenerator.prototype.exportJson = function exportJson() {
+
+  var exportProps = {};
+  var str, file;
+
+  exportProps.fieldproperties = this.exportInfo;
+  exportProps.pblockname      = this.name;
+  exportProps.pblockdesc      = this.blockdesc;
+  exportProps.pautopkg        = true;
+  exportProps.pkginstall      = false;
+  exportProps.pkgcli          = true;
+  exportProps.pkgdesc         = this.name + " Package";
+
+  str =  JSON.stringify(exportProps);
+  // file = this.basepath + '/' + this.blockhandle + '-generator-c5.json';
+  file = this.basepath + '/generator-c5.json';
+
+  this.write(file,str);
+
+}
 
 BlockGenerator.prototype.checkDependencies = function checkDependencies() {
     //check dependieces
@@ -248,61 +330,11 @@ BlockGenerator.prototype.buildTpl = function buildTpl(fields) {
     if(typeof fields[i] != 'undefined' && typeof fields[i].formhtml != 'undefined') {
       formtpl += fields[i].formhtml;
     } else {
-      console.log('Error: HTML not found...');
+      console.log('HTML not found: ' + fields[i].key);
     }
   };
   return formtpl;
 };
-
-
-BlockGenerator.prototype.processSingleFields = function processSingleFields(str) {
-  var result = [];
-  if(typeof str == 'undefined'){
-    return result;
-  }
-  var singleFields = str.split(',');
-  var sf;
-  var sfResult;
-  var fieldParts;
-  var reqParts;
-
-  if(singleFields.length == 0){
-    return result;
-  }
-
-  for (var i = 0; i < singleFields.length; i++) {
-    sf = singleFields[i];
-    sfResult = {};
-    fieldParts;
-
-    reqParts = sf.split('__');
-    sfResult.required = reqParts.length > 0 && reqParts[1] == 'r';
-    fieldParts = sfResult.required ? reqParts[0].split(':') : sf.split(':');
-
-    //set required flag
-    if(sfResult.required){
-      this.requiredFields = true;
-    }
-
-    if(fieldParts.length > 1
-      && typeof this.availFieldTypes[fieldParts[0]] != 'undefined')
-    {
-      sfResult.type   = fieldParts[0].trim();
-      sfResult.key    = fieldParts[1].trim();
-      sfResult.dbtype = this.availFieldTypes[fieldParts[0]]['dbkey'];
-
-      sfResult = this.mapFieldTypes(sfResult);
-
-      this.renderFieldHtml(sfResult);
-
-      // add to main array
-      result[i] = sfResult;
-    }
-
-  }
-
-  return result;
-}
 
 
 BlockGenerator.prototype.mapFieldTypes = function mapFieldTypes(sfResult) {
@@ -423,29 +455,131 @@ BlockGenerator.prototype.checkType = function checkType(sfResult) {
 }
 
 
-BlockGenerator.prototype.processFields = function processFields() {
+BlockGenerator.prototype.renderFields = function renderFields(fields) {
+  var result = {};
+  var arrRes = [];
+  if(typeof fields != 'object') {
+    return false;
+  }
+
+  for (var layout in fields) {
+    if(!fields.hasOwnProperty(layout)) {
+      continue;
+    }
+
+    if(layout == 'tabfields') {
+      arrRes = [];
+      for (var i = 0; i < fields[layout].length; i++) {
+        // console.log(';asdfsfadsfadsadf');
+        // console.log(fields[layout][i]);
+        arrRes[i] = this.renderFieldArray(fields[layout][i]);
+      };
+      result[layout] = arrRes;
+    } else {
+      console.log('single')
+      result[layout] = this.renderFieldArray(fields[layout]);
+    }
+  }
+
+
+  return result;
+}
+
+BlockGenerator.prototype.renderFieldArray = function renderFieldArray(input) {
+  var result = [];
+  var field;
+  if(typeof input == 'undefined'){
+    return false;
+  }
+
+  var avFieldTypes = avFields.getFields()['normal'];
+
+  for (var i = 0; i < input.length; i++) {
+    field = input[i];
+    if(typeof field['type'] == 'undefined'){
+      continue;
+    }
+    field['dbtype'] = avFieldTypes[field['type']]['dbkey'];
+    field = this.mapFieldTypes(field);
+    result[i] = this.renderFieldHtml(field);
+  };
+  return result;
+}
+
+BlockGenerator.prototype.getFieldProps = function getFieldProps() {
+  if(typeof this.pfields == 'undefined') {
+    return;
+  }
+
   var singleFields;
   var result = {};
   if(this.tabs) {
     var tabs = this.pfields.split('|');
     var resultTabs = [];
     for (var i = 0; i < tabs.length; i++) {
-      resultTabs[i] = this.processSingleFields(tabs[i]);
+      resultTabs[i] = this.getFieldPropertiesFromString(tabs[i]);
     };
     if(resultTabs.length > 0 ){
       result.tabfields = resultTabs;
-      result.fields = this._.flatten(resultTabs);
+      // result.fields = this._.flatten(resultTabs);
     }
   }
   if(this.om) {
-    result.omfields = this.processSingleFields(this.pomfields);
+    result.omfields = this.getFieldPropertiesFromString(this.pomfields);
   }
   if(this.pfields.length > 0 && !this.tabs) {
-    result.fields = this.processSingleFields(this.pfields);
+    result.fields = this.getFieldPropertiesFromString(this.pfields);
   }
-  // console.log(result);
   return result;
 };
+
+
+
+BlockGenerator.prototype.getFieldPropertiesFromString = function getFieldPropsFromString(str) {
+
+  var result = [];
+  if(typeof str == 'undefined'){
+    return result;
+  }
+  var singleFields = str.split(',');
+  var sf;
+  var sfResult;
+  var fieldParts;
+  var reqParts;
+
+  if(singleFields.length == 0){
+    return result;
+  }
+
+  for (var i = 0; i < singleFields.length; i++) {
+    sf = singleFields[i];
+    sfResult = {};
+
+    reqParts = sf.split('__');
+    sfResult.required = reqParts.length > 0 && reqParts[1] == 'r';
+    fieldParts = sfResult.required ? reqParts[0].split(':') : sf.split(':');
+
+    //set required flag
+    if(sfResult.required){
+      this.requiredFields = true;
+    }
+
+    if(fieldParts.length > 1
+      && typeof this.availFieldTypes[fieldParts[0]] != 'undefined')
+    {
+      sfResult.type   = fieldParts[0].trim();
+      sfResult.key    = fieldParts[1].trim();
+
+      // add to main array
+      result[i] = sfResult;
+    }
+
+  }
+
+  return result;
+
+}
+
 
 BlockGenerator.prototype.files = function files() {
 
@@ -478,6 +612,7 @@ BlockGenerator.prototype.files = function files() {
     this.template(this.blocktplpath + 'om_form.php', this.blockpath + 'om_form.php');
   }
 
+  this.exportJson();
 
 };
 

@@ -35,7 +35,7 @@ module.exports = function (grunt) {
       }
     },
     clean: {
-      build: ['index_cli.php', 'cli', 'package.json', 'Gruntfile.js', 'readme.md', 'node_modules', 'composer.json', 'cs']
+      build: ['index_cli.php', 'cli', 'package.json', 'generator-c5.json', 'Gruntfile.js', 'readme.md', 'node_modules', 'composer.json', 'cs']
     },
     'regex-replace': {
       lines: { //specify a target with any name
@@ -94,12 +94,12 @@ module.exports = function (grunt) {
   var lang = grunt.option('lang') || 'de_DE';
   var vt = grunt.option('vt') || 'patch';
 
-  grunt.registerTask('langs', ['exec:createlangs:' + lang]);
   grunt.registerTask('cleanlines', ['trimtrailingspaces', 'regex-replace:lines:remove']);
   grunt.registerTask('upgrade', ['set_vt:' + vt, 'version','exec:upgrade']);
   grunt.registerTask('build', ['set_vt:' + vt, 'version','exec:upgrade','clean:build']);
   grunt.registerTask('install', ['exec:install']);
   grunt.registerTask('uninstall', ['exec:uninstall']);
+  grunt.registerTask('langs', ['exec:createlangs:' + lang]);
   grunt.registerTask('set_vt', 'Set a config property.', function(vt) {
     grunt.config.set('version.options.type', vt);
   });

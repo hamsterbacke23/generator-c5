@@ -10,21 +10,7 @@ Three block form layouts are supported
 It depends on external modules for images, texteditor and link checking, which have to be provided.
 
 ## Sublime Integration Example
-generator-c5.json (or other filename):
-```
-{
-  "pblockname" : "My Nice Block",
-  "pfields":    "input:firstfield,input:secondfield",
-  "pomfields":  "input:arowinput,input:wazzup,linkintern:mylink",
-  "pom":        true,
-  "pblockdesc":  "block description",
-  "pautopkg":    true,
-  "pkginstall": false,
-  "pkgcli":     true,
-  "pkgdesc": "package description"
-}
 
-```
 Sublime Build Example:
 ```
 {
@@ -41,10 +27,16 @@ Sublime Build Example:
         "name": "Create new concrete5 block",
         "working_dir" : "$file_path",
         "shell": true
+      },
+
+      { "cmd": ["grunt", "cleanlines"],
+        "name": "Concrete5 Package: Remove empty lines (cleanlines)",
+        "working_dir" : "$file_path",
+        "shell": true
       }
-  ],
-  "encoding": "latin1"
+  ]
 }
+
 ```
 
 ## Getting Started
