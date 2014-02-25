@@ -22,6 +22,7 @@ function defineFields () {
             {type: 'download', dbkey: 'I', om: true},
             {type: 'linkintern', dbkey: 'I', om: true},
             {type: 'tiny', dbkey: 'X2', om: true},
+            {type: 'radio', dbkey: 'C', om: true},
             {type: 'image', dbkey: 'I', om: false},
             {type: 'datetime', dbkey: 'TS', om: false}
   ];
