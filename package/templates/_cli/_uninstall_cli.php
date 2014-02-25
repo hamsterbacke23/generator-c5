@@ -1,6 +1,6 @@
 <?php
 chdir(__DIR__);
-require dirname(__DIR__) .'/index_cli.php';  //do not remove
+require __DIR__ .'/init.php';  //do not remove
 
 $pkgHandle = '<%=pkghandle%>';
 
