@@ -25,21 +25,28 @@ module.exports = function (grunt) {
       },
       uninstall : {
         command: 'php cli/uninstall_cli.php',
+      }
+    },
+    pot: {
+      options:{
+        text_domain: 'messages',
+        dest: 'languages/<%%=pot.options.lang%>/LC_MESSAGES/messages.po',
+        keywords: ['t'],
+        overwrite: false,
+        encoding: 'utf-8',
+        lang : 'de_DE'
       },
-      createlangs : {
-        command: function(lang) {
-          return "find ./ -iname '*.php' -exec xgettext --default-domain=messages --from-code=utf-8 --keyword=t --language=PHP -p ./languages/"+lang+"/LC_MESSAGES/ -j {} \\;";
-        },
-        stdout: false,
-        stderr: false
+      files:{
+        src:  ['**/*.php','!node_modules/**','!cli/**'],
+        expand: true,
       }
     },
     clean: {
-      build: ['index_cli.php', 'cli', 'package.json', 'generator-c5.json', 'Gruntfile.js', 'readme.md', 'node_modules', 'composer.json', 'cs']
+      build: ['cli', 'package.json', 'generator-c5.json', 'Gruntfile.js', 'readme.md', 'node_modules', 'composer.json', 'cs']
     },
     'regex-replace': {
       lines: { //specify a target with any name
-        src: ['**/*.php'],
+        src: ['**/*.php','!node_modules/**','!cli/**'],
         actions: [
           {
             name: 'remove',
@@ -52,7 +59,7 @@ module.exports = function (grunt) {
     },
     trimtrailingspaces: {
       main: {
-        src: ['**/*.php'],
+        src: ['**/*.php','!node_modules/**','!cli/**'],
         options: {
           filter: 'isFile',
           encoding: 'utf8',
@@ -62,7 +69,7 @@ module.exports = function (grunt) {
     },
     phpcs: {
       application: {
-        dir: ['**/*.php']
+        dir: ['**/*.php','!node_modules/**','!cli/**'],
       },
       options: {
         bin: 'vendor/bin/phpcs',
@@ -71,7 +78,7 @@ module.exports = function (grunt) {
     },
     watch: {
       scripts: {
-        files: ['**/*.php'],
+        files: ['**/*.php','!node_modules/**','!cli/**'],
         tasks: ['phpcs'],
         options: {
           spawn: false,
@@ -89,7 +96,9 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-phpcs');
+  grunt.loadNpmTasks('grunt-pot');
   grunt.loadNpmTasks('grunt-contrib-watch');
+
 
   var lang = grunt.option('lang') || 'de_DE';
   var vt = grunt.option('vt') || 'patch';
@@ -99,9 +108,12 @@ module.exports = function (grunt) {
   grunt.registerTask('build', ['set_vt:' + vt, 'version','exec:upgrade','clean:build']);
   grunt.registerTask('install', ['exec:install']);
   grunt.registerTask('uninstall', ['exec:uninstall']);
-  grunt.registerTask('langs', ['exec:createlangs:' + lang]);
+  grunt.registerTask('langs', ['set_lang:' + lang,'pot']);
   grunt.registerTask('set_vt', 'Set a config property.', function(vt) {
     grunt.config.set('version.options.type', vt);
+  });
+  grunt.registerTask('set_lang', 'Set a config property.', function(lang) {
+    grunt.config.set('pot.options.lang', lang);
   });
 
 };

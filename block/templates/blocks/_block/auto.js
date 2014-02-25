@@ -111,6 +111,16 @@ $(function() {
     handle: '.sort_handle',
     helper: 'clone',
     axis: 'y'
+    <% if(tiny){ %>
+    ,start: function(event,ui){
+      var nid = $(ui.item[0]).find('.advancedEditor').attr('id');
+      tinyMCE.execCommand('mceRemoveControl', false, nid);
+    }
+    ,stop: function(event,ui){
+      var nid = $(ui.item[0]).find('.advancedEditor').attr('id');
+      tinyMCE.execCommand('mceAddControl', false, nid);
+    }
+    <% }//endif %>
   });
 
     //update newRowTitle

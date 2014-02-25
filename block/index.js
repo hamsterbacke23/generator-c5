@@ -255,8 +255,6 @@ BlockGenerator.prototype.setup = function setup() {
  */
 BlockGenerator.prototype.checkRequired = function checkRequired(fieldprops) {
 
-  console.log(fieldprops);
-
   var checkRequired = function(field)
   {
     if(typeof field.required != 'undefined' && field.required == true){

@@ -85,14 +85,12 @@ class <%=blockcchandle%>BlockController extends BlockController {
     <% }); %>
 
     <% if(om){ %>
-    $i = 0;
-    foreach ($args[$this->omKey] as $item) {
+    foreach ($args[$this->omKey] as $key => $item) {
     <% _.each(_.uniq(tinys), function(tinykeyb) { %>
-    if(isset($args[$this->omKey][$i]['<%=tinykeyb%>'])) {
-      $args[$this->omKey][$i]['<%=tinykeyb%>'] = $tiny->translateTo($item['<%=tinykeyb%>']); //row tiny c5 translate
+    if(isset($args[$this->omKey][$key]['<%=tinykeyb%>'])) {
+      $args[$this->omKey][$key]['<%=tinykeyb%>'] = $tiny->translateTo($item['<%=tinykeyb%>']); //row tiny c5 translate
     }
     <% }); %>
-     $i++;
     }
     <% } //om true %>
 
