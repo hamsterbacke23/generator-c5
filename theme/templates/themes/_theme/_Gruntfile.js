@@ -79,7 +79,12 @@ module.exports = function (grunt) {
 
   <% if(prepros != 'none') {%>
   grunt.loadNpmTasks('grunt-contrib-watch');
+  <% if(prepros != 'sass') {%>
   grunt.loadNpmTasks('grunt-<%=prepros%>');
+  <% }%>
+  <% if(prepros != 'less') {%>
+  grunt.loadNpmTasks('grunt-contrib-<%=prepros%>');
+  <% }%>
   <% }%>
   grunt.registerTask('assets', ['bower-install']);
 };
