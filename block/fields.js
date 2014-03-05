@@ -48,20 +48,21 @@ function getFields () {
 }
 
 function getFieldsMessage(mode) {
-  var fieldInputMsg;
+  var fieldInputMsg = '';
   var availFields = getFields();
   var availFieldTypes = {};
 
   if(typeof mode == 'undefined') {
     availFieldTypes = availFields.normal;
-  } else if (mode == 'om') {
+  } else if (typeof mode != 'undefined' && mode == 'om') {
     availFieldTypes = availFields.om;
   }
 
+  var fieldsMsg = Object.keys(availFieldTypes).join(', ');
 
   fieldInputMsg +=  '--------------------------------------------------------------------------- \r\n';
   fieldInputMsg += 'Please enter the fields you want in "type:name[__r]" format comma-separated \r\n';
-  fieldInputMsg += '(Fieldtypes: ' + Object.keys(availFieldTypes).join(', ') + ')' +'\r\n';
+  fieldInputMsg += '(Fieldtypes: ' + fieldsMsg + ')' +'\r\n';
   fieldInputMsg += '--------------------------------------------------------------------------- \r\n';
   fieldInputMsg += 'EXAMPLE: input:heading__r,tiny:text,checkbox:displayicon,linkintern:bcID' + '\r\n';
 
