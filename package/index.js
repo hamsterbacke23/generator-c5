@@ -19,7 +19,10 @@ var PackageGenerator = module.exports = function PackageGenerator(args, options,
       this.installDependencies({
         skipInstall: options['skip-install'],
         callback: function() {
-          var cmds = ['cleanlines', 'langs','install'];
+          var cmds = ['cleanlines', 'langs'];
+          if(this.installpkg) {
+            cmds.push('exec:install');
+          }
           this.spawnCommand('grunt', cmds);
         }.bind(this)
       });
@@ -73,7 +76,7 @@ PackageGenerator.prototype.askFor = function askFor() {
       name: 'pkginstall',
       type: 'confirm',
       message: 'Try installing the package in concrete5?',
-      default: true
+      default: false
     }];
 
     if(this.options.configExtern) {
@@ -124,7 +127,6 @@ PackageGenerator.prototype.projectfiles = function projectfiles() {
 
   if(this.themehandle) {
     this.template(this.pkgtplpath +'_GruntfileTheme.js', this.basepath + 'Gruntfile.js');
-    this.template(this.pkgtplpath +'_bowerTheme.json', this.basepath + 'bower.json');
   } else {
     this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
   }

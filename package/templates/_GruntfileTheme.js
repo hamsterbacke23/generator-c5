@@ -1,192 +1,191 @@
 'use strict';
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
 
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
 
-    themePath: '<%%=pkg.themePath%>',
-
-    'bower-install': {
-      target: {
-        src: ['inc/html_start.php'],
-
-        cwd: '',
-        ignorePath: '',
-        exclude: [],
-        fileTypes: {
-          html: {
-            block: /(([\s\t]*)<!--\s*bower:*(\S*)\s*-->)(\n|\r|.)*?(<!--\s*endbower\s*-->)/gi,
-            detect: {
-              js: /<script.*src=['"](.+)['"]>/gi,
-              css: /<link.*href=['"](.+)['"]/gi
+        sass: {
+          all: {
+            files: {
+                "css/style.out.css": "css/style.scss",
+                "css/print.css": "css/print.scss"
             },
-            replace: {
-              js: '<script src="{{filePath}}"></script>',
-              css: '<link rel="stylesheet" href="{{filePath}}" />'
-            }
-          }, php: {
-            block: /(([\s\t]*)<\?php\s*\/\/\s*<!--\s*bower:*(\S*)\s*-->\s*\?>)(\n|\r|.)*?(<\?php\s*\/\/\s*<!--\s*endbower\s*-->\s*\?>)/gi,
-            detect: {
-              js: /<script.*src=['"](.+)['"]>/gi,
-              css: /<link.*href=['"](.+)['"]/gi
-            },
-            replace: {
-              js: '<script src="{{filePath}}"></script>',
-              css: '<link rel="stylesheet" href="{{filePath}}" />'
+            options: {
+                sourceComments: 'map',
+                printError: true
             }
           }
-        }
-      }
-    },
-
-    sass: {
-      klickmodell: {
-        files: {
-          "css/style.out.css": "css/style.scss",
-          "css/print.css": "css/print.scss"
         },
-        options: {
-          sourceComments: 'map',
-          printError: true
-        }
-      },
-      production: {
-        files: {
-          "css/style.out.css": "css/style.scss",
-          "css/print.css": "css/print.scss"
+
+        cssmin: {
+            minify: {
+                expand: true,
+                cwd: 'css/',
+                src: [ '*.css', '!*.min.css'],
+                dest: 'css/',
+                ext: '.min.css'
+            }
         },
-        options: {
-          outputStyle: 'compressed' //not working right now as of 3/14
-        }
-      },
-    },
 
-    pot: {
-      concrete5: {
-        options: {
-          text_domain: 'messages',
-          dest: 'languages/<%=pot.options.lang%>/LC_MESSAGES/messages.po',
-          keywords: ['t'],
-          overwrite: false,
-          encoding: 'utf-8',
-          lang: 'de_DE'
+        pot: {
+            files: {
+                src: ['**/*.php', '!node_modules/**', '!cli/**'],
+                expand: true,
+            },
+            options: {
+                text_domain: 'messages',
+                dest: 'languages/<%%=pot.options.lang%>/LC_MESSAGES/messages.po',
+                keywords: ['t'],
+                overwrite: false,
+                encoding: 'utf-8',
+                lang: 'de_DE'
+            }
         },
-        files: {
-          src: ['**/*.php', '!node_modules/**', '!cli/**'],
-          expand: true,
-        }
-      }
-    },
-    <% }//endif pot %>
 
-    <% if(responsive_images) {%>
-    responsive_images: {
-      normal: {
-        options: {
-          // Needs: Graphicsmagick
-          sizes: [{
-            width: 320,
-          }, {
-            width: 480,
-          }, {
-            width: 640,
-          }, {
-            width: 768,
-          }, {
-            width: 1024,
-          }]
+        concat: {
+            options: {
+                banner: '/*! !!! Diese Datei nicht editieren! Wird automatisch überschrieben !!! \n\n Concat <%%= pkg.name %> <%%= grunt.template.today("dd-mm-yyyy hh:MM:ss") %> */\n',
+                process: function(src, filepath) {
+                    return '\n\n//### ' + filepath + ' ### \n' + src;
+                },
+                separator: ';'
+            },
+            src: ['js/sb/responsiveImages.js', 'js/vendor/matchmedia.polyfill.min.js', 'js/vendor/**/*.js', 'js/sb/**/*.js'], // verhindert doppelte scripteinbindung automatisch
+            dest: 'js/scripts.js'
         },
-        files: [{
-          expand: true,
-          src: ['**.{jpg,gif,png}'],
-          cwd: '<%%=pkg.themePath%>img/dummy/',
-          dest: '<%%=pkg.themePath%>img/resized/'
-        }]
-      }
-    },
-    <% }//endif responsive images %>
 
-    concat: {
-      options: {
-        banner: '/*! !!! Diese Datei nicht editieren! Wird automatisch überschrieben !!! \n\n Concat <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy hh:MM:ss") %> */\n',
-        process: function(src, filepath) {
-          return '\n\n//### ' + filepath + ' ### \n' + src;
+        uglify: {
+            options: {
+                banner: '/*! Uglify <%%= pkg.name %> <%%= grunt.template.today("dd-mm-yyyy hh:MM:ss") %> */\n',
+                sourceMap: true
+            },
+            files: {
+                'js/scripts.min.js': ['<%%= concat.klickmodell.dest %>']
+            }
         },
-        separator: ';'
-      },
-      klickmodell: {
-        src: [
-        '<%%=pkg.themePath%>js/sb/responsiveImages.js',
-        '<%%=pkg.themePath%>js/vendor/matchmedia.polyfill.min.js',
-        '<%%=pkg.themePath%>js/vendor/**/*.js',
-        '<%%=pkg.themePath%>js/sb/**/*.js'
-        ],
-        dest: themePath + '<%%=pkg.themePath%>js/scripts.js'
-      },
-    },
 
-    uglify: {
-      options: {
-        banner: '/*! Uglify <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy hh:MM:ss") %> */\n',
-        sourceMap: true
-      },
-      klickmodell: {
-        files: {
-          '<%%=pkg.themePath%>js/scripts.min.js': ['<%= concat.klickmodell.dest %>']
-        }
-      }
-    },
+        jshint: {
+            all: ['Gruntfile.js', 'js/sb/**/*.js'],
+            options : {
+              globalstrict: true,
+              globals : {
+                jQuery: true,
+                module: true,
+                exports: true,
+                '$': true,
+                enquire: true,
+                document: true,
+                window: true
+              }
+            }
+        },
 
-    watch: {
-      options: {
-        spawn: false //no child processes
-      },
-      sass: {
-        files: ['<%%=pkg.themePath%>css/**/*.scss'],
-        tasks: ['sass:<%%=pkg.env%>']
-      },
-      scripts: {
-        files: ['<%%=pkg.themePath%>js/sb/**/*.js', '<%%=pkg.themePath%>js/vendor/**/*.js'],
-        tasks: ['doScripts']
-      }
-      // css: { //this is just for live reload
-      //   files: ['css/**/*.css'],
-      //   tasks: [],
-      //   options: {
-      //     livereload: true
-      //   }
-      // }
-    }
+        watch: {
+            options: {
+                spawn: false //no child processes
+            },
+            sass: {
+                files: ['css/**/*.scss'],
+                tasks: ['sass', 'cssmin']
+            },
+            scripts: {
+                files: ['js/sb/**/*.js', 'js/vendor/**/*.js'],
+                tasks: ['doScripts']
+            }
+            // css: { //this is just for live reload
+            //   files: ['css/**/*.css'],
+            //   tasks: [],
+            //   options: {
+            //     livereload: true
+            //   }
+            // }
+        },
 
-  });
+        responsive_images: {
+            normal: {
+                options: {
+                    // Needs: Graphicsmagick
+                    sizes: [{
+                        width: 320,
+                    }, {
+                        width: 480,
+                    }, {
+                        width: 640,
+                    }, {
+                        width: 768,
+                    }, {
+                        width: 1024,
+                    }]
+                },
+                files: [{
+                    expand: true,
+                    src: ['**.{jpg,gif,png}'],
+                    cwd: 'img/dummy/',
+                    dest: 'img/resized/'
+                }]
+            }
+        },
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  <% if(responsive_images){ %>
-  grunt.loadNpmTasks('grunt-responsive-images');
-  <% } //endif responsive_images %>
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  <% if(sass){ %>
-  grunt.loadNpmTasks('grunt-sass');
-  <% } //endif sass %>
-  <% if(pot){ %>
-  grunt.loadNpmTasks('grunt-pot');
-  <% } //endif pot %>
+        'regex-replace': {
+          lines: { //specify a target with any name
+            src: ['**/*.php','!node_modules/**','!cli/**'],
+            actions: [
+              {
+                name: 'remove',
+                search: '(\s*\\n){2,}',
+                replace: '\n\n',
+                flags: 'g'
+              }
+            ]
+          }
+        },
 
-  <% if(pot){ %>
-  var lang = grunt.option('lang') || 'de_DE';
-  grunt.registerTask('langs', ['set_lang:' + lang, 'pot']);
-  grunt.registerTask('set_lang', 'Set a config property.', function(lang) {
-    grunt.config.set('pot.options.lang', lang);
-  });
-  <% } //endif pot %>
+        trimtrailingspaces: {
+          main: {
+            src: ['**/*.php','!node_modules/**','!cli/**'],
+            options: {
+              filter: 'isFile',
+              encoding: 'utf8',
+              failIfTrimmed: false
+            }
+          }
+        },
 
-  grunt.registerTask('doScripts', ['concat', 'uglify']);
+        exec: {
+          upgrade : {
+            command: 'php cli/upgrade_cli.php',
+          },
+          install : {
+            command: 'php cli/install_cli.php',
+          },
+          uninstall : {
+            command: 'php cli/uninstall_cli.php',
+          }
+        },
 
-  <% if(bower){ %>
-  grunt.loadNpmTasks('grunt-bower-install');
-  grunt.registerTask('assets', ['bower-install']);
-  <% } //endif bower %>
+    });
 
-}; //module
+    grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-trimtrailingspaces');
+    grunt.loadNpmTasks('grunt-regex-replace');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-responsive-images');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-pot');
+
+    grunt.registerTask('cleanlines', ['trimtrailingspaces', 'regex-replace:lines:remove']);
+
+    var lang = grunt.option('lang') || 'de_DE';
+    grunt.registerTask('langs', ['set_lang:' + lang, 'pot']);
+    grunt.registerTask('set_lang', 'Set a config property.', function(lang) {
+        grunt.config.set('pot.options.lang', lang);
+    });
+    grunt.registerTask('doScripts', ['concat', 'uglify']);
+
+};

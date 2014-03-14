@@ -4,7 +4,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
 // HTML START
 $this->inc('inc/html_start.php');
 // HEADER Bereich
-$this->inc('inc/head.inc.php');
+$this->inc('inc/header.inc.php');
 ?>
   <div class="main-container">
     <div class="main wrapper clearfix">
@@ -28,7 +28,7 @@ $this->inc('inc/head.inc.php');
 
 <?php
  // Footer JS
- $this->inc('inc/foot.inc.php');
+ $this->inc('inc/footer.inc.php');
 
  Loader::element('footer_required');
 ?>

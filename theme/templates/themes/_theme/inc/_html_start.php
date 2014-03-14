@@ -1,6 +1,11 @@
 <?php  defined('C5_EXECUTE') or die(_("Access Denied."));
+
+<%if(multilanguage) {%>
 // Sprache finden
-define('PAGE_LANG','de');
+$languageHelper = Loader::helper('theme_language', '<%=pkghandle%>');
+$lang           = $languageHelper->getShortLocaleString();
+define('PAGE_LANG', $lang);
+<%}//endif%>
 
 // CSS Body Classes
 $bodyClasses  = $c->getCollectionTypeHandle();
@@ -20,16 +25,12 @@ $bodyClasses .= ($u->isLoggedIn())?' isLoggedIn':'';
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,700' rel='stylesheet' type='text/css'>
- <link rel="stylesheet" href="<?php echo $this->getThemePath(); ?>/css/style.css">
+ <link rel="stylesheet" href="<?php echo $this->getThemePath(); ?>/css/styles.out.css">
  <script src="<?php  echo $this->getThemePath(); ?>/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 
 <!-- === Header Required === -->
 <?php  Loader::element('header_required'); ?>
 <!-- === Header Required === -->
-
-<?php // here come dependencies from bower.json "dependencies" ?>
-<?php // <!-- bower:js --> ?>
-<?php // <!-- endbower --> ?>
 
 <%if(responsiveImages){%>
 <?php

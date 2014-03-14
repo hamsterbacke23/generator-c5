@@ -9,41 +9,19 @@ var ThemeGenerator = module.exports = function ThemeGenerator(args, options, con
 
   this.argument('name', { type: String, required: false });
 
-  var runGruntTask = function() {
-    process.chdir(this.basepath + 'themes/' + this.themehandle);
-    this.spawnCommand('grunt', ['assets']);
-    if(this.prepros != 'none'){
-      this.spawnCommand('grunt', ['watch']);
-    }
-  };
 
-  var installPkg = function() {
+  this.on('end', function () {
     if (this.autopkg) {
-      process.chdir(this.curdir);
       this.invoke('c5:package', {
         args: this.pkghandle,
         options: {
           'pkgdesc' : this.themedesc + ' Package',
           'themehandle' : this.themehandle,
-          'dependencies' : this.dependencies,
           'nested' : true
-        },
-        callback: runGruntTask.bind(this)
-      });
-    }
-  };
-
-
-  this.on('end', function () {
-    if(this.donpm) {
-      process.chdir(this.basepath + 'themes/' + this.themehandle);
-      this.installDependencies({
-        skipInstall: options['skip-install'],
-        callback: installPkg.bind(this)
+        }
       });
     }
   });
-
 
 };
 
@@ -82,27 +60,22 @@ ThemeGenerator.prototype.askFor = function askFor() {
       return input.length > 0;
     }
   },{
+    name: 'ppagetypes',
+    message: 'Page Types: e.g. Zwei Spalten, Left Sidebar, Drei Spalten ...\r\n' +
+             'Page Types: ',
+    validate: function(input){
+      return input.length > 0;
+    }
+  },{
     type: 'confirm',
     name: 'responsiveImages',
-    message: 'Use sb responsive images?',
+    message: 'Use responsive images?',
     default: true
   },{
     type: 'confirm',
-    name: 'donpm',
-    message: 'Install npm dependencies?',
+    name: 'multilanguage',
+    message: 'Use multiple languages?',
     default: true
-  },{
-    when: function(response) {
-      return response.donpm === true;
-    },
-    type: 'list',
-    name: 'prepros',
-    message: 'Preprocessor?',
-    choices : [
-      {name:'Sass', value: 'sass'},
-      {name: 'Less', value : 'less'},
-      {name: 'None', value : 'none'}],
-    default: 'sass'
   },{
     type: 'confirm',
     name: 'pautopkg',
@@ -114,10 +87,21 @@ ThemeGenerator.prototype.askFor = function askFor() {
     this.themedesc        = props.pthemedesc;
     this.autopkg          = props.pautopkg;
     this.name             = askTitle ? props.pthemename : this.name;
-    this.donpm            = props.donpm;
     this.prepros          = props.prepros;
+    this.multilanguage    = props.multilanguage;
     this.responsiveImages = props.responsiveImages;
     this.dependencies     = '';
+
+    var pageTypes = props.ppagetypes.split(',');
+    this.pageTypes = [];
+    for (var i = 0; i < pageTypes.length; i++) {
+      var pageType = {
+        key : this._.underscored(pageTypes[i]),
+        value : pageTypes[i].trim()
+      };
+      this.pageTypes[i] = pageType;
+    };
+
 
     this.themehandle   = this._.underscored(
       this._.slugify(this.name).trim()
@@ -138,9 +122,33 @@ ThemeGenerator.prototype.askFor = function askFor() {
 
 ThemeGenerator.prototype.files = function files() {
   var prdirs = genUtils.processDirectory.bind(this);
+  var self = this;
   this.themepath = this.themehandle + '/';
+
+  //Multilangue stuff
+  if(this.multilanguage) {
+    this.copy('blocks/switch_language/templates/_theme.php', this.basepath + 'blocks/switch_language/templates/' + this.themehandle + '.php');
+    prdirs('languages/', this.basepath + 'languages/');
+  }
+
+  //Helpers
+  prdirs('helpers', this.basepath + 'helpers');
+
+  //Navigation
+  this.copy('blocks/autonav/templates/_theme.php', this.basepath + 'blocks/autonav/templates/' + this.themehandle + '.php');
+
   prdirs('themes/_theme', this.basepath + 'themes/' + this.themehandle);
+  //Theme
+
+  //Page Types
+  this._.each(this.pageTypes, function(pageType) {
+    self.copy('themes/_theme/_pagetype.php', self.basepath + 'themes/' + self.themehandle + '/' + pageType.key + '.php');
+  });
+
+  // Elements (header_required etc.)
   prdirs('elements', this.basepath + 'elements');
+
+  //Make new Sass or Less dir
   this.mkdir(this.basepath  + 'themes/' + this.themepath + 'css/' + this.prepros);
 };
 

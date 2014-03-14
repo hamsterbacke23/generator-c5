@@ -16,6 +16,7 @@ module.exports = function (grunt) {
       },
       pkg: 'package.json',
     },
+    <%% if(pkgcli){%>
     exec: {
       upgrade : {
         command: 'php cli/upgrade_cli.php',
@@ -27,6 +28,7 @@ module.exports = function (grunt) {
         command: 'php cli/uninstall_cli.php',
       }
     },
+    <%% }%>
     pot: {
       options:{
         text_domain: 'messages',
@@ -86,8 +88,6 @@ module.exports = function (grunt) {
       },
     }
 
-
-
   });
 
   grunt.loadNpmTasks('grunt-trimtrailingspaces');
@@ -99,14 +99,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-pot');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-
   var lang = grunt.option('lang') || 'de_DE';
   var vt = grunt.option('vt') || 'patch';
 
   grunt.registerTask('cleanlines', ['trimtrailingspaces', 'regex-replace:lines:remove']);
   grunt.registerTask('upgrade', ['set_vt:' + vt, 'version','exec:upgrade']);
   grunt.registerTask('build', ['set_vt:' + vt, 'version','exec:upgrade','clean:build']);
-  grunt.registerTask('install', ['exec:install']);
   grunt.registerTask('uninstall', ['exec:uninstall']);
   grunt.registerTask('langs', ['set_lang:' + lang,'pot']);
   grunt.registerTask('set_vt', 'Set a config property.', function(vt) {

@@ -28,8 +28,14 @@ class <%=pkgcchandle+'Package'%> extends Package
         BlockType::installBlockTypeFromPackage($blockHandle, $pkg);
       };
     }
+
     <% if(themehandle) { %>
+    // ad theme
     PageTheme::add('<%=themehandle%>', $pkg);
+
+    //install page types
+    $ptHelper = Loader::helper('pagetypes', '<%=pkghandle%>');
+    $ptHelper->installPageTypes();
     <% } %>
   }
 

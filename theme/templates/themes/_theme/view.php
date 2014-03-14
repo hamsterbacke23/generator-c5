@@ -4,7 +4,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
 // HTML START
 $this->inc('inc/html_start.php');
 // HEADER Bereich
-$this->inc('inc/head.inc.php');
+$this->inc('inc/header.inc.php');
 ?>
   <div class="main-container">
     <div class="main wrapper clearfix">
