@@ -117,13 +117,21 @@ PackageGenerator.prototype.projectfiles = function projectfiles() {
     this.copy(this.pkgtplpath + '_cli/_uninstall_cli.php', this.basepath + 'cli/uninstall_cli.php');
     this.copy(this.pkgtplpath + '_cli/_upgrade_cli.php', this.basepath + 'cli/upgrade_cli.php');
     this.copy(this.pkgtplpath + '_cli/_init.php', this.basepath + 'cli/init.php');
-    this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
-    this.template(this.pkgtplpath + '_package.json', this.basepath + 'package.json');
     this.template(this.pkgtplpath + '_composer.json', this.basepath + 'composer.json');
     this.template(this.pkgtplpath + '_readme.md', this.basepath + 'readme.md');
+    this.template(this.pkgtplpath + '_package.json', this.basepath + 'package.json');
+  }
+
+  if(this.themehandle) {
+    this.template(this.pkgtplpath +'_GruntfileTheme.js', this.basepath + 'Gruntfile.js');
+    this.template(this.pkgtplpath +'_bowerTheme.json', this.basepath + 'bower.json');
+  } else {
+    this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
   }
 
   this.copy(this.pkgtplpath + 'icon.png', this.basepath + 'icon.png');
   this.directory(this.pkgtplpath + '_languages', this.basepath + 'languages');
+
+  this.config.save();
 };
 

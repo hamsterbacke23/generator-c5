@@ -20,7 +20,6 @@ $akd = $c->getCollectionAttributeValue('meta_description');
 $akk = $c->getCollectionAttributeValue('meta_keywords');
 
 
-
 /* Title */
 $pageTitle = htmlspecialchars($pageTitle, ENT_COMPAT, APP_CHARSET);
 if ($akt) {
@@ -85,13 +84,13 @@ if($appleIconFID) {
 <?php  }
 
 if($modernIconFID) {
-	$f = File::getByID($modernIconFID);
-	?><meta name="msapplication-TileImage" content="<?php echo $f->getRelativePath(); ?>" /><?php
-	echo "\n";
-	if(strlen($modernIconBGColor)) {
-		?><meta name="msapplication-TileColor" content="<?php echo $modernIconBGColor; ?>" /><?php
-		echo "\n";
-	}
+  $f = File::getByID($modernIconFID);
+  ?><meta name="msapplication-TileImage" content="<?php echo $f->getRelativePath(); ?>" /><?php
+  echo "\n";
+  if(strlen($modernIconBGColor)) {
+    ?><meta name="msapplication-TileColor" content="<?php echo $modernIconBGColor; ?>" /><?php
+    echo "\n";
+  }
 }
 
 if (is_object($cp)) {
