@@ -90,6 +90,7 @@ PackageGenerator.prototype.askFor = function askFor() {
       this.pkgdesc      = props.pkgdesc.trim();
       this.installpkg   = props.pkginstall;
       this.pkgcli       = props.pkgcli;
+      this.pkgversion   = typeof props.pkgversion == undefined ? '0.0.1' : props.pkgversion;
       this.name         = askTitle ? props.ppkgname : this.name;
       this.setConfig();
       cb();
@@ -100,7 +101,6 @@ PackageGenerator.prototype.askFor = function askFor() {
 
 PackageGenerator.prototype.setConfig = function setConfig() {
   this.pkgtplpath   = '';
-  this.pkgversion   = '0.0.1';
   this.blockhandle  = typeof this.options.blockhandle == 'undefined' ? '' : this.options.blockhandle;
   this.dependencies = typeof this.options.dependencies == 'undefined' ? '' : this.options.dependencies;
   this.themehandle  = this.options.themehandle;

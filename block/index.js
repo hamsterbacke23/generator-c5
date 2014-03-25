@@ -294,12 +294,12 @@ BlockGenerator.prototype.exportJson = function exportJson() {
   exportProps.pblockdesc      = this.blockdesc;
   exportProps.pautopkg        = true;
   exportProps.pkginstall      = false;
-  exportProps.pkgcli          = true;
+  exportProps.pkgcli          = false;
   exportProps.pkgdesc         = this.name + " Package";
 
   str =  JSON.stringify(exportProps);
   // file = this.basepath + '/' + this.blockhandle + '-generator-c5.json';
-  file = this.basepath + '/generator-c5.json';
+  file = this.basepath + '/generator-c5block.json';
 
   this.write(file,str);
 

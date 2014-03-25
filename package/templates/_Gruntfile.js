@@ -16,7 +16,7 @@ module.exports = function (grunt) {
       },
       pkg: 'package.json',
     },
-    <%% if(pkgcli){%>
+    <% if(pkgcli){%>
     exec: {
       upgrade : {
         command: 'php cli/upgrade_cli.php',
@@ -28,7 +28,7 @@ module.exports = function (grunt) {
         command: 'php cli/uninstall_cli.php',
       }
     },
-    <%% }%>
+    <% }%>
     pot: {
       options:{
         text_domain: 'messages',

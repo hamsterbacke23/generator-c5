@@ -45,14 +45,16 @@ module.exports = function(grunt) {
 
         concat: {
             options: {
-                banner: '/*! !!! Diese Datei nicht editieren! Wird automatisch überschrieben !!! \n\n Concat <%%= pkg.name %> <%%= grunt.template.today("dd-mm-yyyy hh:MM:ss") %> */\n',
+                banner: '/*! !!! Diese Datei nicht editieren! Wird automatisch überschrieben !!! \n\n Concat <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy hh:MM:ss") %> */\n',
                 process: function(src, filepath) {
                     return '\n\n//### ' + filepath + ' ### \n' + src;
                 },
                 separator: ';'
             },
-            src: ['js/sb/responsiveImages.js', 'js/vendor/matchmedia.polyfill.min.js', 'js/vendor/**/*.js', 'js/sb/**/*.js'], // verhindert doppelte scripteinbindung automatisch
-            dest: 'js/scripts.js'
+            dist: {
+              src: ['js/sb/responsiveImages.js', 'js/vendor/matchmedia.polyfill.min.js', 'js/vendor/**/*.js', 'js/sb/**/*.js'], // verhindert doppelte scripteinbindung automatisch
+              dest: 'js/scripts.js'
+            }
         },
 
         uglify: {
@@ -60,8 +62,10 @@ module.exports = function(grunt) {
                 banner: '/*! Uglify <%%= pkg.name %> <%%= grunt.template.today("dd-mm-yyyy hh:MM:ss") %> */\n',
                 sourceMap: true
             },
-            files: {
-                'js/scripts.min.js': ['<%%= concat.klickmodell.dest %>']
+            dist: {
+              files: {
+                  'js/scripts.min.js': ['<%%=concat.dist.dest %>']
+              }
             }
         },
 

@@ -1,37 +1,31 @@
 <?php
-defined('C5_EXECUTE') or die("Access Denied.");
+include('inc/head.php');
 
-// HTML START
-$this->inc('inc/html_start.php');
-// HEADER Bereich
-$this->inc('inc/header.inc.php');
+// Template mit Inhaltsbereich ueber 3 Spalten
+// und zusaetzlich rechter Spalte
 ?>
-  <div class="main-container">
-    <div class="main wrapper clearfix">
+  <div class="wrapper clearfix">
 
+    <?php include('inc/header.php');?>
+
+    <article class="content3">
       <?php
-      // Titel
-      $aTitel = new Area('Titel');
-      $aTitel->display($c);
+      // Seitenueberschrift
+      $a = new Area('Titel');
+      $a->display($c);
       ?>
+      <div class="inhaltszeile">
+        <div class="col three">
+          <h1><?php echo isset($title) ? $title : ''; ?></h1>
+          <?php echo isset($innerContent) ? $innerContent : ''?>
+        </div>
+      </div>
+    </article>
 
-      <main>
-        <?php
-          // Area Main
-          $aInhaltsbereich = new Area('main');
-          $aInhaltsbereich->display($c);
-        ?>
-      </main>
+  </div>
 
-    </div> <!-- #main -->
-  </div> <!-- #main-container -->
-
-<?php
- // Footer JS
- $this->inc('inc/foot.inc.php');
-
- Loader::element('footer_required');
-?>
-
+  <?php include('inc/footer.php');?>
+  <?php include('inc/footer_scripts.php');?>
+  <?php Loader::element('footer_required'); ?>
   </body>
 </html>
