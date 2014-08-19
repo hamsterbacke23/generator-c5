@@ -33,7 +33,7 @@ $(function() {
   };
 
   function getMustacheTemplate(type) {
-    var tpl = Mustache.compile($('template.' + type).html())
+    var tpl = Mustache.compile($('.' + type).html())
     return tpl;
   }
 

@@ -41,4 +41,8 @@
 .ccm-ui .addicon {
   margin-left: 5px;
 }
+
+.ccm-ui .hidden {
+  display: none;
+}
 </style>

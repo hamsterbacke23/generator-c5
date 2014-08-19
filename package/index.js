@@ -14,7 +14,7 @@ var PackageGenerator = module.exports = function PackageGenerator(args, options,
   this.option('configExtern', { type: Object, required: false});
 
   this.on('end', function () {
-    if(this.pkgcli) {
+    if(this.pkgbuild) {
       process.chdir(this.basepath);
       this.installDependencies({
         skipInstall: options['skip-install'],
@@ -65,9 +65,17 @@ PackageGenerator.prototype.askFor = function askFor() {
         return input.length > 0;
       }
     },{
+      name: 'pkgbuild',
+      type: 'confirm',
+      message: 'Use Grunt?',
+      default: true
+    },{
+      when: function(response) {
+        return response.pkgbuild === true;
+      },
       name: 'pkgcli',
       type: 'confirm',
-      message: 'Include command line interface and Grunt?',
+      message: 'Include command line?',
       default: true
     },{
       when: function(response) {
@@ -87,11 +95,12 @@ PackageGenerator.prototype.askFor = function askFor() {
       if(this.options.configExtern) {
         this._.extend(props, this.options.configExtern);
       }
-      this.pkgdesc      = props.pkgdesc.trim();
-      this.installpkg   = props.pkginstall;
-      this.pkgcli       = props.pkgcli;
-      this.pkgversion   = typeof props.pkgversion == undefined ? '0.0.1' : props.pkgversion;
-      this.name         = askTitle ? props.ppkgname : this.name;
+      this.pkgdesc    = props.pkgdesc.trim();
+      this.installpkg = props.pkginstall;
+      this.pkgcli     = props.pkgcli;
+      this.pkgbuild   = typeof props.pkgbuild == undefined ? true : props.pkgbuild;
+      this.pkgversion = typeof props.pkgversion == undefined || !props.pkgversion ? '0.0.1' : props.pkgversion;
+      this.name       = askTitle ? props.ppkgname : this.name;
       this.setConfig();
       cb();
     }.bind(this));
@@ -120,15 +129,18 @@ PackageGenerator.prototype.projectfiles = function projectfiles() {
     this.copy(this.pkgtplpath + '_cli/_uninstall_cli.php', this.basepath + 'cli/uninstall_cli.php');
     this.copy(this.pkgtplpath + '_cli/_upgrade_cli.php', this.basepath + 'cli/upgrade_cli.php');
     this.copy(this.pkgtplpath + '_cli/_init.php', this.basepath + 'cli/init.php');
+  }
+
+  if(this.pkgbuild) {
     this.template(this.pkgtplpath + '_composer.json', this.basepath + 'composer.json');
     this.template(this.pkgtplpath + '_readme.md', this.basepath + 'readme.md');
     this.template(this.pkgtplpath + '_package.json', this.basepath + 'package.json');
-  }
 
-  if(this.themehandle) {
-    this.template(this.pkgtplpath +'_GruntfileTheme.js', this.basepath + 'Gruntfile.js');
-  } else {
-    this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
+    if(this.themehandle) {
+      this.template(this.pkgtplpath +'_GruntfileTheme.js', this.basepath + 'Gruntfile.js');
+    } else {
+      this.template(this.pkgtplpath +'_Gruntfile.js', this.basepath + 'Gruntfile.js');
+    }
   }
 
   this.copy(this.pkgtplpath + 'icon.png', this.basepath + 'icon.png');

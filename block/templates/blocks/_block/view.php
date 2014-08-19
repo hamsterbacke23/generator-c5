@@ -1,5 +1,10 @@
 <?php defined('C5_EXECUTE') or die("Access Denied."); ?>
-<% if(plainimage) { %><?php $im = Loader::helper('image');?><% } // endif%>
+<% if(plainimage) { %>
+<?php
+$im = Loader::helper('image');
+$attrh = Loader::helper('lang_attributes','sb_images');
+?>
+<%} // endif%>
 
 <% _.each(fields, function(field) { %>
 <% if(field.viewhtml != '') { %>

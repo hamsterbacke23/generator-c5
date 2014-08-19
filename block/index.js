@@ -235,6 +235,7 @@ BlockGenerator.prototype.setup = function setup() {
   this.hasform         = true; //for now always create form blocks
   this.fileselector    = this.downloads.length > 0 || this.images.length > 0 || this.plainimages.length > 0;
   this.linkintern      = this.inlinks.length > 0;
+  this.checkbox        = this.checkboxes.length > 0;
   this.tiny            = this.tinys.length > 0;
   this.image           = this.images.length > 0 || this.plainimages.length > 0;
   this.responsiveimage = this.images.length > 0;
@@ -295,6 +296,7 @@ BlockGenerator.prototype.exportJson = function exportJson() {
   exportProps.pautopkg        = true;
   exportProps.pkginstall      = false;
   exportProps.pkgcli          = false;
+  exportProps.pkgbuild        = true;
   exportProps.pkgdesc         = this.name + " Package";
 
   str =  JSON.stringify(exportProps);
