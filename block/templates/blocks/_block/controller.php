@@ -2,15 +2,14 @@
 defined('C5_EXECUTE') or die("Access Denied.");
 <% if(tiny ) { %>require_once('tiny_controller.php');<% } %>
 
-<% if(om){ %>
-require_once('om_controller.php');
 /**
  * <%=blockcchandle%>
  *
- * @package <%=pkgcchandle+'Package'%>
  * @author Author <author@seitenbau.com>
  * @since  <%=pkgversion%>
  */
+<% if(om){ %>
+require_once('om_controller.php');
 class <%=blockcchandle%>BlockController extends <%=blockcchandle%>OneToManyController {
 <% } else { %>
 class <%=blockcchandle%>BlockController extends BlockController {
@@ -254,33 +253,30 @@ class <%=blockcchandle%>BlockController extends BlockController {
     /**
      * Creates a link from the cid
      *
-     * @param $bcID the collection I
+     * @param Integer $bcID collection ID
      *
      * @return array Link
      */
     public function getPageLink($bcID)
     {
-      Loader::model('linkinfo', 'sb_links');
-      $linkInfo = new LinkInfo($bcID);
+        Loader::model('linkinfo', 'sb_links');
+        $linkInfo = new LinkInfo($bcID);
 
-      $link = array(
-        'url'             => $linkInfo->getPageUrl(),
-        'showError'       => $linkInfo->showLinkError(),
-        'active'          => $linkInfo->isActive(),
-        'errorMsg'        => $linkInfo->getLinkError(),
-        'displayLinkText' => $linkInfo->getPageTitle(),
-        'target'          => $this->target,
-        'title'           => $this->title,
-        'linkType'        => 'intern',
-        'class'           => 'btn'
-      );
-      return $link;
+        $link = array(
+            'url'             => $linkInfo->getPageUrl(),
+            'showError'       => $linkInfo->showLinkError(),
+            'active'          => $linkInfo->isActive(),
+            'errorMsg'        => $linkInfo->getLinkError(),
+            'displayLinkText' => $linkInfo->getPageTitle(),
+            'target'          => $this->target,
+            'title'           => $this->title,
+            'linkType'        => 'intern',
+            'class'           => 'btn'
+        );
+        return $link;
     }
     <% } %>
-
-
 }
 
 
 
-?>

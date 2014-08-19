@@ -1,18 +1,22 @@
 <?php
-if($textEditorHeight<100)  $textEditorHeight=380;
-else $textEditorHeight= $textEditorHeight-70;
+if ($textEditorHeight < 100) {
+    $textEditorHeight = 380;
+} else {
+    $textEditorHeight= $textEditorHeight - 70;
+}
 
 if (!isset($editor_selector)) {
-  $editor_selector = 'ccm-advanced-editor';
+    $editor_selector = 'ccm-advanced-editor';
 }
 
 if (isset($editor_height)) {
-  $textEditorHeight = $editor_height;
+    $textEditorHeight = $editor_height;
 }
 
 if (isset($editor_width)) {
-  $textEditorWidth = $editor_width;
+    $textEditorWidth = $editor_width;
 }
+
 ?>
 <script language="javascript">
 var <%=blockcchandle.toUpperCase() + '_TINYCONFIG'%> = {

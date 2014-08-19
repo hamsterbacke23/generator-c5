@@ -16,16 +16,16 @@ $this->inc('formstyles.inc.css');
 <section class="omcontents sortable-links">
 <?php
 $i = 0;
-if(!empty($omcontents)) {
-  // render existing rows //
-  foreach ($omcontents as $row) {
-    $row['index'] = $i;
-    echo $this->controller->renderMustacheTemplate($row);
-    $i++;
-  }//endforeach
+if (!empty($omcontents)) {
+    // render existing rows //
+    foreach ($omcontents as $row) {
+        $row['index'] = $i;
+        echo $this->controller->renderMustacheTemplate($row);
+        $i++;
+    }//endforeach
 } else {
-  // render single empty row //
-  echo $this->controller->renderMustacheTemplate(); //leave array empty!
+    // render single empty row //
+    echo $this->controller->renderMustacheTemplate(); //leave array empty!
 }//endif ?>
 </section>
 
