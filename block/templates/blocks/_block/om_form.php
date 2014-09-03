@@ -33,4 +33,5 @@ if (!empty($omcontents)) {
 
 <div class="clearBoth"></div>
 
+<div class="hidden rowtpl"><!--<?php echo $rowtpl?>--></div>
 

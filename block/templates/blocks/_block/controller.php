@@ -5,7 +5,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
 /**
  * <%=blockcchandle%>
  *
- * @author Author <author@seitenbau.com>
+ * @author  <@seitenbau.com>
  * @since  <%=pkgversion%>
  */
 <% if(om){ %>
@@ -58,7 +58,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
      */
     public function getPkgHandle()
     {
-        if (!isset($this->pkgHandle) || !$this->pkgHandle){
+        if (!isset($this->pkgHandle) || !$this->pkgHandle) {
             $blockType = BlockType::getByHandle($this->btHandle);
             $this->pkgHandle = $blockType->getPackageHandle();
         }
@@ -72,7 +72,8 @@ class <%=blockcchandle%>BlockController extends BlockController {
      *
      * @return null
      */
-    public function edit() {
+    public function edit()
+    {
         $this->setOmForm();
     }
 
@@ -81,7 +82,8 @@ class <%=blockcchandle%>BlockController extends BlockController {
      *
      * @return null
      */
-    public function add() {
+    public function add()
+    {
         $this->setOmForm();
     }
     <% } %>
@@ -92,16 +94,12 @@ class <%=blockcchandle%>BlockController extends BlockController {
      *
      * @return null
      */
-    public function view() {
+    public function view()
+    {
         <% if(om){ %>
         $this->setOmContent();
         <% } %>
 
-        <% if(image){ %>
-        <% _.each(_.uniq(images), function(imageKey) { %>
-        $this->set('<%=imageKey%>Img', $this->buildImage($this-><%=imageKey%>));
-        <% }); %>
-        <% } %>
     }
     <% } %>
 
@@ -109,6 +107,8 @@ class <%=blockcchandle%>BlockController extends BlockController {
     <% if(tiny || datetime || checkbox){ %>
     /**
      * Save Override
+     *
+     * @param array $args Arguments
      *
      * @return null
      */
@@ -119,7 +119,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
         <% }); %>
 
         <% if(tiny){ %>
-        $tiny = new <%=blockhandle%>Tiny();
+        $tiny = new <%=blockcchandle%>Tiny();
         <% _.each(_.uniq(tinys), function(tinykeyb) { %>
         if (isset($args['<%=tinykeyb%>'])) {
             $<%=tinykeyb%> = $tiny->translateTo($args['<%=tinykeyb%>']);
@@ -154,32 +154,35 @@ class <%=blockcchandle%>BlockController extends BlockController {
     /**
      * Validation
      *
+     * @param array $args arguments to be validated
+     *
      * @return $e Error Object
      */
-    public function validate($args) {
-      $e = Loader::helper('validation/error');
+    public function validate($args)
+    {
+        $e = Loader::helper('validation/error');
 
-      <% _.each(fields, function(field) { %>
-      <% if(field.required) { %>
-      if (!trim($args['<%=field.key%>'])) {
-          $e->add(t('<%=blockhandle%>.error.<%=field.key%>fehlt'));
-      }
-      <% } %>
-      <% }); %>
+        <% _.each(fields, function(field) { %>
+        <% if(field.required) { %>
+        if (!trim($args['<%=field.key%>'])) {
+            $e->add(t('<%=blockhandle%>.error.<%=field.key%>fehlt'));
+        }
+        <% } %>
+        <% }); %>
 
-      <% if(om){ %>
-      foreach ($args[$this->omKey] as $item) {
-          if($item['delete'] == 'yes') {
-              continue;
-          }
-          <% _.each(omfields, function(omfield) { if(typeof omfield != 'undefined' && omfield.required) { %>
-          if (!trim($item['<%=omfield.key%>'])) {
-              $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>fehlt'));
-          }
-          <% } });%>
-      }
-      <% } %>
-      return $e;
+        <% if(om){ %>
+        foreach ($args[$this->omKey] as $item) {
+            if($item['delete'] == 'yes') {
+                continue;
+            }
+            <% _.each(omfields, function(omfield) { if(typeof omfield != 'undefined' && omfield.required) { %>
+            if (!trim($item['<%=omfield.key%>'])) {
+                $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>fehlt'));
+            }
+            <% } });%>
+        }
+        <% } %>
+        return $e;
     }
     <% } //requiredFields %>
 
@@ -188,12 +191,15 @@ class <%=blockcchandle%>BlockController extends BlockController {
     /**
      * Build image
      *
-     * @return $img Image Object
+     * @param integer $fID   File ID
+     * @param array   $attrs Attribute
+     *
+     * @return object $img Image Object
      */
-    private function buildImage($fID, $attrs = false)
+    public function buildImage($fID, $attrs = false)
     {
         $ih = Loader::helper('image_builder', 'sb_images');
-        $ih->addAssets($this);
+        // $ih->addAssets($this);
         $img = $ih->getImageFromId($fID, $attrs);
 
         return $img;
@@ -227,7 +233,8 @@ class <%=blockcchandle%>BlockController extends BlockController {
      *
      * @return String File Size
      */
-    function formatBytes($bytes, $precision = 2) {
+    function formatBytes($bytes, $precision = 2)
+    {
         $units = array(
             'Bytes',
             'Kilobytes',

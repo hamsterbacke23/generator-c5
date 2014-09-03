@@ -13,8 +13,8 @@ $attrh = Loader::helper('lang_attributes','sb_images');
 
 <?php
 //// <%=field.type%> <%=field.key%> ////
-if($<%=field.key%>) {
-  echo $<%=field.key%>;
+if ($<%=field.key%>) {
+    echo $<%=field.key%>;
 }//endif
 ?>
 
@@ -31,7 +31,7 @@ if($<%=field.key%>) {
 <%});%>
 
 <% if(om) { %>
-<?php if(isset($omcontents) && !empty($omcontents)) { ?>
+<?php if (isset($omcontents) && !empty($omcontents)) { ?>
 <ul>
   <?php
     foreach ($omcontents as $row) {
@@ -73,10 +73,11 @@ if($<%=field.key%>) {
 //////////////////////////////////////////////
 // MOVE THIS TO THEME HEADER and uncomment: //
 //////////////////////////////////////////////
-// $bpHelper    = Loader::helper('required_assets','sb_images');
+// $bpHelper    = Loader::helper('required_assets', 'sb_images');
 // $breakpoints = $bpHelper->getBreakpoints();
-// $bpPrint = str_replace('|',',',$breakpoints);
-// echo "<script> var SCREEN_RESOLUTIONS = [".$bpPrint."]; </script>";
+// $bpPrint = str_replace('|', ',', $breakpoints);
+// echo 'var SB_GLOBAL_VARS = SB_GLOBAL_VARS || {};';
+// echo "SB_GLOBAL_VARS.screenResolutions = [".$bpPrint."]; ";
 /////////
 // END //
 /////////

@@ -398,21 +398,24 @@ BlockGenerator.prototype.renderFieldHtml = function renderFieldHtml(sfResult) {
     omField = this._.clone(sfResult);
     sfResult.omformhtml = this._.template(tplformOm, {
       field: omField,
-      blockhandle : this.blockhandle
+      blockhandle : this.blockhandle,
+      blockcchandle : this.blockcchandle
     });
   }
 
   if(typeof tplform != 'undefined') {
     sfResult.formhtml = this._.template(tplform,{
       field: sfResult,
-      blockhandle : this.blockhandle
+      blockhandle : this.blockhandle,
+      blockcchandle : this.blockcchandle
     });
   }
 
   if(typeof tplview != 'undefined') {
     sfResult.viewhtml = this._.template(tplview,{
       field: sfResult,
-      blockhandle : this.blockhandle
+      blockhandle : this.blockhandle,
+      blockcchandle : this.blockcchandle
     });
   }
 
@@ -604,8 +607,8 @@ BlockGenerator.prototype.files = function files() {
   }
   if(this.om) {
     this.copy('libraries/Mustache.php', this.basepath + '/libraries/Mustache.php');
-    this.copy('models/om_record.php', this.basepath + '/models/om_record.php');
     this.copy(this.blocktplpath + 'formstyles.inc.css', this.blockpath + 'formstyles.inc.css');
+    this.template('models/om_record.php', this.basepath + '/models/om_record.php');
     this.template(this.blocktplpath + 'auto.js', this.blockpath + 'auto.js');
     this.template( 'elements/row.php', this.basepath + '/elements/row.php');
     this.template(this.blocktplpath + 'om_controller.php', this.blockpath + 'om_controller.php');

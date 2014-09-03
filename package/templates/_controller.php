@@ -4,7 +4,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 /**
  * <%=pkgcchandle+'Package'%>
  *
- * @author Author <author@seitenbau.com>
+ * @author <@seitenbau.com>
  * @since  <%=pkgversion%>
  */
 class <%=pkgcchandle+'Package'%> extends Package

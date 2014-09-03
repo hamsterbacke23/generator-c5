@@ -146,6 +146,6 @@ PackageGenerator.prototype.projectfiles = function projectfiles() {
   this.copy(this.pkgtplpath + 'icon.png', this.basepath + 'icon.png');
   this.directory(this.pkgtplpath + '_languages', this.basepath + 'languages');
 
-  this.config.save();
+  // this.config.save();
 };
 

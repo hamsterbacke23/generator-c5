@@ -10,7 +10,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
  * - Overwrites concrete5 standard block save, duplicate, delete functions
  * - Handles Mustache Row Templates
  *
- * @author author <author@seitenbau.com>
+ * @author  <@seitenbau.com>
  * @since  0.1
  */
 abstract class <%=blockcchandle%>OneToManyController extends BlockController{
@@ -202,12 +202,12 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
 
             $db          = Loader::db();
             $columns     = $db->GetCol('show columns from `' . $this->omTable . '`');
-            $record      = new omRecord($this->omTable);
+            $record      = new <%=blockcchandle%>OmRecord($this->omTable);
 
             $args = $this->mapCheckboxes($args);
 
             //set columns
-            foreach($columns as $key) {
+            foreach ($columns as $key) {
                 if (isset($args[$key])) {
                     $record->{$key} = $args[$key];
                 }
@@ -216,8 +216,8 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
             $record->bID = $bID ? $bID : $this->bID;
 
             //delete or update
-            if($args['delete'] == 'yes') {
-                if(isset($args['id'])) {
+            if ($args['delete'] == 'yes') {
+                if (isset($args['id'])) {
                     $record->Delete();
                 }
             } else {
@@ -226,14 +226,19 @@ abstract class <%=blockcchandle%>OneToManyController extends BlockController{
         }
     }
 
+    /**
+     * Get Om Contens
+     *
+     * @return array db result
+     */
     private function getomcontents()
     {
         $sql = sprintf(
-                  'SELECT * FROM %s ' .
-                  'WHERE  bID = %d',
-                   $this->omTable,
-                   $this->bID
-              );
+            'SELECT * FROM %s ' .
+            'WHERE  bID = %d',
+            $this->omTable,
+            $this->bID
+        );
         $db = Loader::db();
         $dbResult = $db->GetAll($sql);
 

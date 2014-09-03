@@ -33,7 +33,8 @@ $(function() {
   };
 
   function getMustacheTemplate(type) {
-    var tpl = Mustache.compile($('.' + type).html())
+    var html = $('.' + type).html().replace('<!--', '').replace('-->',''); // get html and uncomment
+    var tpl = Mustache.compile(html)
     return tpl;
   }
 
