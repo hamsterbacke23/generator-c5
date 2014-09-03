@@ -1,6 +1,6 @@
 {
   "name": "generator-c5",
-  "version": "0.5.94",
+  "version": "0.5.95",
   "description": "A generator for Yeoman, generates concrete5 blocks, packages etc.",
   "keywords": [
     "yeoman-generator",
