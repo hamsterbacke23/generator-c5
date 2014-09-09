@@ -11,8 +11,6 @@ $pageSelector = Loader::helper('form/page_selector');
 $this->inc('formstyles.inc.css');
 ?>
 
-<div class="rowtpl hidden"><?php echo $rowtpl?></div>
-
 <section class="omcontents sortable-links">
 <?php
 $i = 0;

@@ -165,7 +165,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
         <% _.each(fields, function(field) { %>
         <% if(field.required) { %>
         if (!trim($args['<%=field.key%>'])) {
-            $e->add(t('<%=blockhandle%>.error.<%=field.key%>fehlt'));
+            $e->add(t('<%=blockhandle%>.error.<%=field.key%>-missing'));
         }
         <% } %>
         <% }); %>
@@ -177,7 +177,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
             }
             <% _.each(omfields, function(omfield) { if(typeof omfield != 'undefined' && omfield.required) { %>
             if (!trim($item['<%=omfield.key%>'])) {
-                $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>fehlt'));
+                $e->add(t('<%=blockhandle%>.error.<%=omfield.key%>-missing'));
             }
             <% } });%>
         }
