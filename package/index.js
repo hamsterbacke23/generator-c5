@@ -96,6 +96,7 @@ PackageGenerator.prototype.askFor = function askFor() {
         this._.extend(props, this.options.configExtern);
       }
       this.pkgdesc    = props.pkgdesc.trim();
+      this.pkgauthor  = props.pauthor.trim();
       this.installpkg = props.pkginstall;
       this.pkgcli     = props.pkgcli;
       this.pkgbuild   = typeof props.pkgbuild == undefined ? true : props.pkgbuild;

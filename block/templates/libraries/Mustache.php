@@ -1,4 +1,5 @@
 <?php
+use \Concrete\Package\<%=pkghandle%>\Libraries;
 
 /*
  * This file is part of Mustache.php.

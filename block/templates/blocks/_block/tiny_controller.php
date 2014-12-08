@@ -1,5 +1,8 @@
 <?php
-defined('C5_EXECUTE') or die("Access Denied.");
+namespace Concrete\Package\<%=pkgcchandle%>\Block\<%=blockcchandle%>;
+use Page;
+use Loader;
+
 
 /**
  * Tiny Controller

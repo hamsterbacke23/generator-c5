@@ -1,17 +1,21 @@
 <?php
-defined('C5_EXECUTE') or die(_("Access Denied."));
+namespace Concrete\Package\<%=pkgcchandle%>;
+use Package;
+use BlockType;
+use SinglePage;
+use Loader;
 
 /**
- * <%=pkgcchandle+'Package'%>
+ * <%=pkgcchandle+' Package'%>
  *
- * @author <@seitenbau.com>
+ * @author <%=pkgauthor%>
  * @since  <%=pkgversion%>
  */
-class <%=pkgcchandle+'Package'%> extends Package
+class Controller extends Package
 {
     protected $pkgHandle = '<%=pkghandle%>';
     protected $dependencies = array(<%=dependencies%>);
-    protected $appVersionRequired = '5.6.1';
+    protected $appVersionRequired = '5.7.2';
     protected $pkgVersion = '<%=pkgversion%>';
     protected $blockHandles = array('<%=blockhandle%>');
 
@@ -22,7 +26,7 @@ class <%=pkgcchandle+'Package'%> extends Package
      */
     public function getPackageName()
     {
-        return t('<%=pkgcchandle%>');
+        return t('<%=pkghandle%>.packagename');
     }
 
     /**
@@ -32,7 +36,7 @@ class <%=pkgcchandle+'Package'%> extends Package
      */
     public function getPackageDescription()
     {
-        return t('<%=pkgdesc.trim()%>');
+        return t('<%=pkghandle%>.packagedescription');
     }
 
     /**
@@ -50,16 +54,6 @@ class <%=pkgcchandle+'Package'%> extends Package
                 BlockType::installBlockTypeFromPackage($blockHandle, $pkg);
             };
         }
-
-        <% if(themehandle) { %>
-
-        // add theme
-        PageTheme::add('<%=themehandle%>', $pkg);
-
-        //install page types
-        $ptHelper = Loader::helper('pagetypes', '<%=pkghandle%>');
-        $ptHelper->installPageTypes();
-        <% } %>
     }
 
     /**
@@ -73,7 +67,6 @@ class <%=pkgcchandle+'Package'%> extends Package
         <% if(dependencies) {%>$this->checkDependencies();<% } %>
         parent::upgrade();
 
-        Loader::model('block_types');
         $pkg = parent::getByHandle($this->pkgHandle);
 
         if (!empty($this->blockHandles)) {
@@ -94,14 +87,14 @@ class <%=pkgcchandle+'Package'%> extends Package
     public function checkDependencies()
     {
         $deps = array_filter($this->dependencies);
-        if(empty($deps)){
+        if (empty($deps)) {
             return;
         }
 
         foreach ($this->dependencies as $dp) {
             $pre_pkg = Package::getByHandle($dp);
-            if (!is_object($pre_pkg)){
-                throw new Exception (t('Prerequisite package ' . implode(', ', $this->dependencies) . ' required'));
+            if (!is_object($pre_pkg)) {
+                throw new Exception(t('Prerequisite package ' . implode(', ', $this->dependencies) . ' required'));
             }
         }
     }

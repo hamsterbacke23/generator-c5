@@ -1,4 +1,4 @@
-<div class="control-group radio-group">
+<div class="form-group">
   <p><strong><?php echo t('<%=blockhandle%>.label.<%=field.key%>.auswahl') ?></strong></p>
   <label class="radio">
     <?php echo $form->radio('<%=field.key%>', '', $<%=field.key%>) ?>

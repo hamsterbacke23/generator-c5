@@ -110,7 +110,7 @@ $(function() {
   $('.sortable-links').sortable({
     items : rowContainerSelector,
     handle: '.sort_handle',
-    helper: 'clone',
+    // helper: 'clone', // clone on sort makes troubles with radiobuttons in row
     axis: 'y'
     <% if(tiny){ %>
     ,start: function(event,ui){

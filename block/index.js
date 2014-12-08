@@ -22,11 +22,12 @@ var BlockGenerator = module.exports = function BlockGenerator(args, options, con
       this.invoke('c5:package', {
         args: this.pkghandle + forceArg,
         options: {
-          'pkgdesc' : this.blockdesc + ' Package',
-          'blockhandle' : this.blockhandle,
-          'dependencies' : this.dependencies,
-          'nested' : true,
-          'configExtern' : this.configExtern
+          'pkgdesc':      this.blockdesc + ' Package',
+          'pkgauthor':    this.author,
+          'blockhandle':  this.blockhandle,
+          'dependencies': this.dependencies,
+          'nested':       true,
+          'configExtern': this.configExtern
         }
       });
     }
@@ -62,7 +63,7 @@ BlockGenerator.prototype.askFor = function askFor() {
     },
     name: 'pblockname',
     default: 'nur\'n test',
-    message: 'Please enter block title:',
+    message: 'Please enter block title (without prefix):',
     validate: function(input){
       return input.length > 0;
     }
@@ -150,11 +151,12 @@ BlockGenerator.prototype.askFor = function askFor() {
     if(this.configExtern) {
       this._.extend(props, this.configExtern);
     }
-    this.pfields        = props.pfields;
-    this.pomfields      = props.pomfields;
-    this.ptabfields     = props.ptabfields;
-    this.blockdesc      = props.pblockdesc;
-    this.autopkg        = props.pautopkg;
+    this.pfields    = props.pfields;
+    this.pomfields  = props.pomfields;
+    this.ptabfields = props.ptabfields;
+    this.blockdesc  = props.pblockdesc;
+    this.autopkg    = props.pautopkg;
+    this.author     = props.pauthor;
 
     this.name       = askTitle || this.configExtern ? props.pblockname : this.name;
     this.tabs = false;
@@ -185,11 +187,13 @@ BlockGenerator.prototype.setup = function setup() {
   this.blocktplpath = 'blocks/_block/';
 
   //define handles and titles
-  this.pkghandle = '';
-  this.basepath = '.';
+  this.pkghandle   = '';
+  this.pkgcchandle = '';
+  this.basepath    = '.';
   if(this.autopkg) {
     this.pkghandle = genUtils.getHandle(this, 'sb');
     this.basepath   = 'packages/' + this.pkghandle;
+    this.pkgcchandle = this._.classify(this.pkghandle).trim();
   }
 
   //init vars
@@ -205,9 +209,7 @@ BlockGenerator.prototype.setup = function setup() {
   this.pkgversion = '0.0.1';
 
   //do stuff
-  this.blockhandle   = this._.underscored(
-    this._.slugify(this.name).trim()
-  );
+  this.blockhandle   = genUtils.getHandle(this, 'sb');
   this.blockcchandle = this._.classify(this.blockhandle).trim();
 
   //read fields

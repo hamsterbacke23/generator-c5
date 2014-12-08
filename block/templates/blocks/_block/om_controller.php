@@ -1,6 +1,9 @@
 <?php
-defined('C5_EXECUTE') or die("Access Denied.");
-
+namespace Concrete\Package\<%=pkgcchandle%>\Block\<%=blockcchandle%>;
+use \Concrete\Package\<%=pkgcchandle%>\Libraries;
+use \Concrete\Core\Block\BlockController;
+use Page;
+use Loader;
 
 /**
  * One-to-many controller
@@ -13,7 +16,7 @@ defined('C5_EXECUTE') or die("Access Denied.");
  * @author  <@seitenbau.com>
  * @since  0.1
  */
-abstract class <%=blockcchandle%>OneToManyController extends BlockController{
+abstract class OneToManyController extends BlockController {
 
     protected $omTable      = '';
     protected $omKey        = '';

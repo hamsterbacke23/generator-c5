@@ -1,4 +1,4 @@
-<div class="control-group radio-group">
+<div class="control-group">
   <label class="control-label" for="omcontents[{{index}}][<%=field.key%>]"><?php echo  t('<%=blockhandle%>.label.<%=field.key%>')?></label>
   <div class="controls">
     <?php

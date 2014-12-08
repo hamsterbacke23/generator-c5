@@ -1,4 +1,4 @@
-<div class="control-group radio-group">
+<div class="control-group">
   <?php echo $form->label('<%=field.key%>', t('<%=blockhandle%>.label.<%=field.key%>')) ?>
   <div class="controls">
     <?php

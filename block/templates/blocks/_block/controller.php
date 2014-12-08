@@ -1,18 +1,19 @@
 <?php
-defined('C5_EXECUTE') or die("Access Denied.");
-<% if(tiny ) { %>require_once('tiny_controller.php');<% } %>
+namespace Concrete\Package\<%=pkgcchandle%>\Block\<%=blockcchandle%>;
+use \Concrete\Core\Block\BlockController;
+use Page;
+use Loader;
 
 /**
  * <%=blockcchandle%>
  *
- * @author  <@seitenbau.com>
+ * @author <%=author%>
  * @since  <%=pkgversion%>
  */
 <% if(om){ %>
-require_once('om_controller.php');
-class <%=blockcchandle%>BlockController extends <%=blockcchandle%>OneToManyController {
+class Controller extends OneToManyController {
 <% } else { %>
-class <%=blockcchandle%>BlockController extends BlockController {
+class Controller extends BlockController {
 <% } %>
 
     protected $btTable                              = 'bt<%=blockcchandle%>';
@@ -37,7 +38,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
      */
     public function getBlockTypeName()
     {
-        return t('<%=blockcchandle%>');
+        return t('<%=pkghandle%>.<%=blockhandle%>.blocktypename');
     }
 
     /**
@@ -47,7 +48,7 @@ class <%=blockcchandle%>BlockController extends BlockController {
      */
     public function getBlockTypeDescription()
     {
-        return t('<%=blockdesc.trim()%>');
+        return t('<%=pkghandle%>.<%=blockhandle%>.blocktypedescription');
     }
 
     <% if(om || tiny){ %>
@@ -266,8 +267,8 @@ class <%=blockcchandle%>BlockController extends BlockController {
      */
     public function getPageLink($bcID)
     {
-        Loader::model('linkinfo', 'sb_links');
-        $linkInfo = new LinkInfo($bcID);
+        Loader::model('internal/link', 'sb_links');
+        $linkInfo = new LinkInternInfo($bcID);
 
         $link = array(
             'url'             => $linkInfo->getPageUrl(),
